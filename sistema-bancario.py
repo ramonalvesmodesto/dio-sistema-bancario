@@ -1,5 +1,42 @@
 import textwrap
 
+
+class Conta:
+    def __init__(self, saldo, numero, agencia, cliente, historico):
+        self._saldo = saldo
+        self._numero = numero
+        self._agencia = agencia
+        self._cliente = cliente
+        self._historico = historico
+
+    @property
+    def saldo(self):
+        return self._saldo
+    
+    @saldo.setter
+    def saldo(self, valor):
+        self._saldo += valor
+
+    @saldo.deleter
+    def saldo(self, valor):
+        self._saldo -= valor
+
+    def nova_conta(self):
+        pass
+
+    def sacar(self, valor):
+        if self._saldo - valor <= 0:
+            return False
+        
+        return True
+
+    def depositar(self, valor):
+        if self._saldo + valor <= self._saldo:
+            return False
+        
+        return True
+
+
 def saque (saldo, valor, extrato, limite, numero_saques, limite_saques,/):
     calculo_saldo = saldo - valor
     novo_saldo = saldo
