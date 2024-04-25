@@ -1,3 +1,4 @@
+from datetime import datetime 
 import textwrap
 from abc import ABC, abstractmethod
 
@@ -114,7 +115,7 @@ class Deposito(Transacao):
             print('\nDepósito realizado com sucesso!!\n')
 
     def __str__(self):
-        return f"Depósito: +{self._valor:.2f}"
+        return f"Depósito: +{self._valor:.2f} - {datetime.now()}"
 
 class Saque(Transacao):
     def __init__(self, valor):
@@ -132,7 +133,7 @@ class Saque(Transacao):
             print('\nSaque realizado com sucesso!!\n')
 
     def __str__(self):
-        return f"Saque: -{self._valor:.2f}"
+        return f"Saque: -{self._valor:.2f} - {datetime.now()}"
     
 class Historico:
     def __init__(self):
