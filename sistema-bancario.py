@@ -74,6 +74,10 @@ class ContaCorrente(Conta):
     def limite_saques(self):
         return self.limite_saques
     
+    @limite.setter
+    def limite_saques(self, valor):
+        self._limite_saques -= valor
+    
     def sacar(self, valor):
         if self._limite_saques == 0:
             print(f'\nSeu limite de saque diário foi excedido! Seu limite de saque é {self._limite_saques}, e você esgotou seus saques diários')
@@ -124,6 +128,7 @@ class Saque(Transacao):
         if conta.sacar(self._valor):
             conta.historico.adicionar_transacao(Saque(self._valor))
             conta.saldo = -self._valor
+            conta.limite_saques = 1
             print('\nSaque realizado com sucesso!!\n')
 
     def __str__(self):
