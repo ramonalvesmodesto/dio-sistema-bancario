@@ -80,7 +80,12 @@ class ContaCorrente(Conta):
         self._limite_saques -= valor
     
     def sacar(self, valor):
-        if self._limite_saques == 0:
+        calculo_saldo = self._saldo - valor
+
+        if calculo_saldo <= 0:
+            print('\nNão foi possível autorizar o saque! O valor de saque excedeu seu saldo!\n')
+            return False
+        elif self._limite_saques == 0:
             print(f'\nSeu limite de saque diário foi excedido! Seu limite de saque é {self._limite_saques}, e você esgotou seus saques diários')
             return False
         elif valor > self._limite:
@@ -233,6 +238,7 @@ def menu_login_cadastro ():
             
     [1] - Fazer login
     [2] - Realizar cadastro
+    [q] - Sair
       
     ======================================
     '''
@@ -261,7 +267,7 @@ def menu_movimentacao_conta (saldo, deposito, usuario):
 
 def existe_cadastro (cpf, usuarios):
     for usuario in usuarios:
-        if usuario['cpf'] == cpf:
+        if usuario.cpf == cpf:
             return True
         
     return False
@@ -296,12 +302,20 @@ def main ():
     numero_conta_corrente = 1
     conta_corrente = ContaCorrente()
 
-    login(usuarios)
-
     while True:
         if id_cliente_logado == '':
-            cliente = cadastro()
-            id_cliente_logado = cliente.cpf
+            print(menu_login_cadastro())
+            opcao = str(input('Escolha uma opção: '))
+
+            if opcao == '1':
+                id_cliente_logado = login(usuarios)
+            elif opcao == '2':
+                cliente = cadastro()
+                id_cliente_logado = cliente.cpf
+                usuarios.append(cliente)
+            elif opcao == 'q':
+                break
+
             continue
 
         if len(cliente.contas) == 0:
@@ -340,7 +354,7 @@ def main ():
             print(cliente)
                     
         if entrada == 'q':
-            break
+            id_cliente_logado = ''
 
 
 main()
