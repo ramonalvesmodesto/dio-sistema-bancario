@@ -352,23 +352,6 @@ def listar_contas_corrente (contas):
         print(f'C/C :{numero_conta}')
         print('\n===========================')
 
-def login_cadastro (usuarios, contas, agencia, conta_corrente):
-    print(menu_login_cadastro())
-    opcao = input('Escolha uma opção: ')
-
-    if opcao == '1':
-        cpf = input('Insira seu CPF: ')
-        if existe_cadastro(cpf, usuarios):
-            return cpf
-        else:
-            print('\nUsuário não encontrado\n')
-    elif opcao == '2':
-        usuario = criar_conta(usuarios, contas, agencia, conta_corrente)
-
-        return usuario
-    
-    return ''
-
 def login(usuarios):
     cpf = input('Insira seu CPF: ')
     if existe_cadastro(cpf, usuarios):
