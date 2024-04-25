@@ -135,6 +135,9 @@ class Historico:
     def adicionar_transacao(self, transacao: Transacao):
         self._transacoes.append(transacao)
 
+    def __str__(self) -> str:
+        return f"\nExtrato: \n{'\n'.join([f'{transacao}' for transacao in self._transacoes])}"
+
 class Endereco:
     def __init__(self, logradouro, numero, estado, cidade, bairro):
         self._logradouro = logradouro
