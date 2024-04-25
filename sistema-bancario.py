@@ -111,8 +111,36 @@ class Historico:
     def adicionar_transacao(self, transacao: Transacao):
         self._transacoes.append(transacao)
 
+class Endereco:
+    def __init__(self, logradouro, numero, estado, cidade, bairro):
+        self._logradouro = logradouro
+        self._numero = numero
+        self._estado = estado
+        self._cidade = cidade
+        self._bairro = bairro
+
+    @property
+    def logradouro(self):
+        return self._logradouro
+    
+    @property
+    def numero(self):
+        return self._numero
+    
+    @property
+    def estado(self):
+        return self._estado
+    
+    @property
+    def cidade(self):
+        return self._cidade
+    
+    @property
+    def bairro(self):
+        return self._bairro
+
 class Cliente:
-    def __init__(self, endereco):
+    def __init__(self, endereco: Endereco):
         self._endereco = endereco
         self._contas = []
 
@@ -140,7 +168,7 @@ class Cliente:
 
 
 class PessoaFisica(Cliente):
-    def __init__(self, endereco, cpf, nome, data_nascimento):
+    def __init__(self, endereco: Endereco, cpf, nome, data_nascimento):
         super().__init__(endereco)
         self._cpf = cpf
         self._nome = nome 
