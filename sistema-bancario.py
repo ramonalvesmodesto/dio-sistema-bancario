@@ -136,7 +136,7 @@ class Historico:
         self._transacoes.append(transacao)
 
     def __str__(self) -> str:
-        return f"\nExtrato: \n{'\n'.join([f'{transacao}' for transacao in self._transacoes])}"
+        return f"\nExtrato: \n{', '.join([f'{transacao}' for transacao in self._transacoes])}"
 
 class Endereco:
     def __init__(self, logradouro, numero, estado, cidade, bairro):
@@ -278,13 +278,6 @@ def login ():
     cpf = input('Digite o seu CPF: ')
     return cpf
 
-def criar_endereco ():
-    logradouro = input('Informe seu logradouro (Rua/Nº): '),
-    bairro = input('Informe seu bairro: ')
-    cidade = input('Informe sua cidade: ')
-    estado = input('Informe seu estado (XX): ')
-
-    return f'{logradouro} - {bairro} - {cidade}/{estado}'
 
 def criar_usuario (cpf, nome, data_nascimento, endereco):
     return {
@@ -300,22 +293,6 @@ def gerar_conta_corrente (cpf, agencia, numero_conta, contas):
         'numero_conta': numero_conta,
         'cpf': cpf
     })
-
-def cadastro (usuarios):
-    nome = input('Informe seu nome: ')
-    cpf = input('Informe seu CPF: ')
-    data_nascimento = input('Informe sua data de nascimento: ')
-    endereco = criar_endereco()
-    usuario = {
-        'nome': nome,
-        'cpf': cpf,
-        'data_nascimento': data_nascimento,
-        'endereco': endereco
-    }
-
-    usuarios.append(usuario)
-
-    return cpf
 
 def criar_conta(usuarios, contas, agencia, conta_corrente): 
     cpf = cadastro(usuarios)
@@ -392,6 +369,28 @@ def login_cadastro (usuarios, contas, agencia, conta_corrente):
     
     return ''
 
+def login(usuarios):
+    cpf = input('Insira seu CPF: ')
+    if existe_cadastro(cpf, usuarios):
+        return cpf
+    else:
+        print('\nUsuário não encontrado\n')
+
+def cadastro():
+    nome = input('Informe seu nome: ')
+    cpf = input('Informe seu CPF: ')
+    data_nascimento = input('Informe sua data de nascimento: ')
+
+    logradouro = input('Informe seu logradouro: ')
+    numero = input('Informe o número de sua casa: ')
+    bairro = input('Informe seu bairro: ')
+    cidade = input('Informe sua cidade: ')
+    estado = input('Informe seu estado (XX): ')
+
+    endereco = Endereco(logradouro, numero, estado, cidade, bairro)
+    cliente = PessoaFisica(endereco, cpf, nome, data_nascimento)
+    return cliente
+
 def main ():
     saldo_conta = 0
     valor_deposito = 0
@@ -401,18 +400,21 @@ def main ():
     extrato_saque = []
     usuarios = []
     contas = []
-    usuario_logado = ''
+    cliente_logado = ''
     agencia = '0001'
     conta_corrente = 1
 
     LIMITE_SAQUE = 500
 
+    login(usuarios)
+
     while True:
-        if usuario_logado == '':
-            usuario_logado = login_cadastro(usuarios, contas, agencia, conta_corrente)
+        if cliente_logado == '':
+            cadastro_cliente = cadastro()
+            cliente_logado = cadastro_cliente.cpf
             continue
 
-        print(menu_movimentacao_conta(saldo_conta, valor_deposito, usuario_logado))
+        print(menu_movimentacao_conta(saldo_conta, valor_deposito, cliente_logado))
         
         entrada = str(input('Digite sua escolha: '))
         
@@ -441,7 +443,7 @@ def main ():
 
         if entrada == '4':
             conta_corrente += 1
-            gerar_conta_corrente(usuario_logado, agencia, conta_corrente, contas)
+            gerar_conta_corrente(cliente_logado, agencia, conta_corrente, contas)
 
         if entrada == '5':
             listar_contas_corrente(contas)
