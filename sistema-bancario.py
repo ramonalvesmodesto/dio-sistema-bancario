@@ -2,12 +2,12 @@ import textwrap
 from abc import ABC, abstractmethod
 
 class Conta:
-    def __init__(self, saldo, numero, agencia, cliente, historico):
-        self._saldo = saldo
-        self._numero = numero
-        self._agencia = agencia
-        self._cliente = cliente
-        self._historico = historico
+    def __init__(self):
+        self._saldo = 0
+        self._numero = ''
+        self._agencia = '0001'
+        self._cliente = ''
+        self._historico = Historico()
 
     @property
     def saldo(self):
@@ -21,8 +21,25 @@ class Conta:
     def saldo(self, valor):
         self._saldo -= valor
 
-    def nova_conta(self):
-        pass
+    @property
+    def numero(self):
+        return self._numero
+    
+    @property
+    def agencia(self):
+        return self._agencia
+    
+    @property
+    def cliente(self):
+        return self._cliente
+    
+    @property
+    def historico(self):
+        return self._historico
+
+    def nova_conta(self, cliente, numero):
+        self._cliente = cliente
+        self._numero = numero
 
     def sacar(self, valor):
         if self._saldo - valor <= 0:
