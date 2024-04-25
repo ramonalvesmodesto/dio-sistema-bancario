@@ -53,6 +53,26 @@ class Conta:
         
         return True
     
+class contaCorrente(Conta):
+    def __init__(self):
+        super().__init__()
+        self._limite = 500.0
+        self._limite_saques = 3
+
+    @property
+    def limite(self):
+        return self._limite
+    
+    @property
+    def limite_saques(self):
+        return self.limite_saques
+    
+    def alterar_limite_saques(self, novo_limite_saque):
+        self._limite_saques = novo_limite_saque
+
+    def alterar_limite(self, novo_limite):
+        self._limite = novo_limite
+    
 class Transacao(ABC):
     @abstractmethod
     def registrar(conta):
