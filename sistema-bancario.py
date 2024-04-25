@@ -53,7 +53,7 @@ class Conta:
         
         return True
     
-class contaCorrente(Conta):
+class ContaCorrente(Conta):
     def __init__(self):
         super().__init__()
         self._limite = 500.0
@@ -75,7 +75,7 @@ class contaCorrente(Conta):
     
 class Transacao(ABC):
     @abstractmethod
-    def registrar(conta):
+    def registrar(conta: Conta):
         pass
 
 class Deposito(Transacao):
@@ -108,7 +108,7 @@ class Historico:
     def __init__(self):
         self._transacoes = []
 
-    def adicionar_transacao(self, transacao):
+    def adicionar_transacao(self, transacao: Transacao):
         self._transacoes.append(transacao)
 
 class Cliente:
@@ -132,10 +132,10 @@ class Cliente:
     def contas(self):
         return self._contas
     
-    def realizar_transacao(self, conta, transacao):
+    def realizar_transacao(self, conta: Conta, transacao: Transacao):
         pass
 
-    def adicionar_conta(self, conta):
+    def adicionar_conta(self, conta: Conta):
         self._contas.append(conta)
 
 
