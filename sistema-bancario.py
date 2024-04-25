@@ -42,13 +42,16 @@ class Conta:
         self._numero = numero
 
     def sacar(self, valor):
-        if self._saldo - valor <= 0:
+        calculo_saldo = self._saldo - valor
+        if calculo_saldo <= 0:
+            print('\nNão foi possível autorizar o saque! O valor de saque excedeu seu saldo!\n')
             return False
         
         return True
 
     def depositar(self, valor):
         if self._saldo + valor <= self._saldo:
+            print('\nNão é permitido depósitos de valores iguais ou menores que zero!\n')
             return False
         
         return True
@@ -71,13 +74,8 @@ class ContaCorrente(Conta):
         return self.limite_saques
     
     def sacar(self, valor):
-        calculo_saldo = super()._saldo - valor
-
         if self._limite_saques == 0:
             print(f'\nSeu limite de saque diário foi excedido! Seu limite de saque é {self._limite_saques}, e você esgotou seus saques diários')
-            return False
-        elif calculo_saldo < 0:            
-            print('\nNão foi possível autorizar o saque! O valor de saque excedeu seu saldo!')
             return False
         elif valor > self._limite:
             print(f'\nNão foi possível realizar o saque! Seu limite de saque é: R${self._limite: .2f}')
@@ -108,6 +106,7 @@ class Deposito(Transacao):
         if conta.depositar(self._valor):
             conta.historico.adicionar_transacao(Deposito(self._valor))
             conta.saldo(self.valor)
+            print('\nDepósito realizado com sucesso!!\n')
 
     def __str__(self):
         return f"Depósito: +{self._valor}"
@@ -124,6 +123,7 @@ class Saque(Transacao):
         if conta.sacar(self._valor):
             conta.historico.adicionar_transacao(Saque(self._valor))
             conta.saldo(-self._valor)
+            print('\nSaque realizado com sucesso!!\n')
 
     def __str__(self):
         return f"Saque: -{self._valor}"
