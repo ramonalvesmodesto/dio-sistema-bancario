@@ -65,6 +65,33 @@ class Historico:
     def adicionar_transacao(self, transacao):
         self._transacoes.append(transacao)
 
+class Cliente:
+    def __init__(self, endereco):
+        self._endereco = endereco
+        self._contas = []
+
+    @property
+    def endereco(self):
+        return self._endereco
+    
+    @endereco.setter
+    def endereco(self, endereco):
+        self._endereco = endereco
+    
+    @endereco.deleter
+    def endereco(self):
+        self._endereco = ''
+
+    @property
+    def contas(self):
+        return self._contas
+    
+    def realizar_transacao(self, conta, transacao):
+        pass
+
+    def adicionar_conta(self, conta):
+        self._contas.append(conta)
+
 
 
 def saque (saldo, valor, extrato, limite, numero_saques, limite_saques,/):
