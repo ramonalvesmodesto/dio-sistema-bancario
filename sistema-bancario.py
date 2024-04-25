@@ -40,6 +40,7 @@ class Conta:
     def nova_conta(self, cliente, numero):
         self._cliente = cliente
         self._numero = numero
+        print('\nConta criada com sucesso!!\n')
 
     def sacar(self, valor):
         calculo_saldo = self._saldo - valor
@@ -57,7 +58,7 @@ class Conta:
         return True
     
     def __str__(self):
-        return f"Agência: {self._agencia} \nC/C: {self._numero}\n"
+        return f"Agência: {self._agencia} C/C: {self._numero}"
     
 class ContaCorrente(Conta):
     def __init__(self, limite = 500.0, limite_saques = 3):
@@ -105,11 +106,11 @@ class Deposito(Transacao):
     def registrar(self, conta: Conta):
         if conta.depositar(self._valor):
             conta.historico.adicionar_transacao(Deposito(self._valor))
-            conta.saldo(self.valor)
+            conta.saldo = self.valor
             print('\nDepósito realizado com sucesso!!\n')
 
     def __str__(self):
-        return f"Depósito: +{self._valor}"
+        return f"Depósito: +{self._valor:.2f}"
 
 class Saque(Transacao):
     def __init__(self, valor):
@@ -122,11 +123,11 @@ class Saque(Transacao):
     def registrar(self, conta: Conta):
         if conta.sacar(self._valor):
             conta.historico.adicionar_transacao(Saque(self._valor))
-            conta.saldo(-self._valor)
+            conta.saldo = -self._valor
             print('\nSaque realizado com sucesso!!\n')
 
     def __str__(self):
-        return f"Saque: -{self._valor}"
+        return f"Saque: -{self._valor:.2f}"
     
 class Historico:
     def __init__(self):
@@ -170,7 +171,7 @@ class Endereco:
         return f"Logradouro: {self._logradouro} \nNúmero: {self._numero} \nEstado: {self._estado} \nCidade: {self._cidade} \nBairro: {self._bairro}"
 
 class Cliente:
-    def __init__(self, endereco: Endereco):
+    def __init__(self, endereco: Endereco = ''):
         self._endereco = endereco
         self._contas = []
 
@@ -218,95 +219,7 @@ class PessoaFisica(Cliente):
         return self._data_nascimento
     
     def __str__(self):
-        return f"CPF: {self._cpf} \nNome: {self._nome} \nData de nascimento: {self._data_nascimento} "
-
-
-def saque (saldo, valor, extrato, limite, numero_saques, limite_saques,/):
-    calculo_saldo = saldo - valor
-    novo_saldo = saldo
-    extrato_saque = extrato.copy()
-
-    if saldo == 0:
-        print('\nVocê não possui saldo!')
-    elif numero_saques == 0:
-        print(f'\nSeu limite de saque diário foi excedido! Seu limite de saque é {limite_saques}, e você esgotou seus saques diários')
-    elif calculo_saldo < 0:            
-        print('\nNão foi possível autorizar o saque! O valor de saque excedeu seu saldo!')
-    elif valor > limite:
-            print(f'\nNão foi possível realizar o saque! Seu limite de saque é: R${limite: .2f}')
-    else:
-        novo_saldo = saldo - valor
-        extrato_saque.append(valor)
-        
-    return novo_saldo, extrato_saque
-
-def deposito (*, saldo, valor, extrato):
-    novo_saldo = saldo
-    extrato_deposito = extrato.copy()
-
-    novo_saldo = saldo + valor
-    extrato_deposito.append(valor)
-
-    return novo_saldo, extrato_deposito
-
-def exibir_extrato (deposito, /, *, saque): 
-    print('\n=================== Extrato ===================')
-
-    if len(deposito) == 0:
-        print('\nNão foram realizadas movimentações de depósito!\n')
-    else:
-        print('\nDepósitos: ')
-        exibir_depositos(deposito)
-    
-    if len(saque) == 0:
-        print('\nNão foram realizadas movimentações de saque!\n')
-    else:
-        print('\nSaques: ')
-        exibir_saques(saque)
-
-    print('===============================================')
-
-def exibir_depositos (deposito):
-    for valor in deposito:
-        print(f'R${valor: .2f}')
-
-def exibir_saques (saque):
-    for valor in saque:
-        print(f'R$ -{valor: .2f}')
-
-def login ():
-    cpf = input('Digite o seu CPF: ')
-    return cpf
-
-
-def criar_usuario (cpf, nome, data_nascimento, endereco):
-    return {
-        'id': cpf,
-        'nome': nome,
-        'data_nascimento': data_nascimento,
-        'endereco': endereco,
-    }
-
-def gerar_conta_corrente (cpf, agencia, numero_conta, contas):
-    contas.append({
-        'agencia': agencia,
-        'numero_conta': numero_conta,
-        'cpf': cpf
-    })
-
-def criar_conta(usuarios, contas, agencia, conta_corrente): 
-    cpf = cadastro(usuarios)
-    gerar_conta_corrente(cpf,agencia, conta_corrente, contas)
-
-    return cpf
-
-
-def existe_cadastro (cpf, usuarios):
-    for usuario in usuarios:
-        if usuario['cpf'] == cpf:
-            return True
-        
-    return False
+        return f"{', '.join([f'{conta}' for conta in self._contas])}\n"
 
 def menu_login_cadastro ():
     menu = '''
@@ -340,17 +253,12 @@ def menu_movimentacao_conta (saldo, deposito, usuario):
 
     return textwrap.dedent(menu)
 
-def listar_contas_corrente (contas):
-    if len(contas) == None:
-        print('\nNenhuma conta foi encontrada')
-    for conta in contas:
-        agencia = conta['agencia']
-        numero_conta = conta['numero_conta']
-
-        print('\n===========================\n')
-        print(f'Agência: {agencia}')
-        print(f'C/C :{numero_conta}')
-        print('\n===========================')
+def existe_cadastro (cpf, usuarios):
+    for usuario in usuarios:
+        if usuario['cpf'] == cpf:
+            return True
+        
+    return False
 
 def login(usuarios):
     cpf = input('Insira seu CPF: ')
@@ -375,61 +283,55 @@ def cadastro():
     return cliente
 
 def main ():
-    saldo_conta = 0
     valor_deposito = 0
-    limite_saque_diario = 3
-    numero_saques = limite_saque_diario
-    extrato_deposito = []
-    extrato_saque = []
     usuarios = []
-    contas = []
-    cliente_logado = ''
-    agencia = '0001'
-    conta_corrente = 1
-
-    LIMITE_SAQUE = 500
+    id_cliente_logado = ''
+    cliente = Cliente()
+    numero_conta_corrente = 1
+    conta_corrente = ContaCorrente()
 
     login(usuarios)
 
     while True:
-        if cliente_logado == '':
-            cadastro_cliente = cadastro()
-            cliente_logado = cadastro_cliente.cpf
+        if id_cliente_logado == '':
+            cliente = cadastro()
+            id_cliente_logado = cliente.cpf
             continue
 
-        print(menu_movimentacao_conta(saldo_conta, valor_deposito, cliente_logado))
-        
+        if len(cliente.contas) == 0:
+            opcao = str(input('\nVocê não possui uma conta corrente, deseja criar uma? 1 para sim, 2 para não \n=> '))
+            if opcao == '1':
+                conta_corrente = ContaCorrente()
+                conta_corrente.nova_conta(cliente, numero_conta_corrente)
+                cliente.adicionar_conta(conta_corrente)
+            else:
+                continue
+
+        print(menu_movimentacao_conta(conta_corrente.saldo, valor_deposito, id_cliente_logado))
         entrada = str(input('Digite sua escolha: '))
         
         if entrada == '1':
             valor_deposito = float(input('Digite o valor para depósito: '))
-
-            if valor_deposito < 0:
-                print('Não é permitido depósitos de valores iguais ou menores que zero!')
-                continue
-
-            resultado = deposito(saldo=saldo_conta, valor=valor_deposito, extrato=extrato_deposito)
-            saldo_conta = resultado[0]
-            extrato_deposito = resultado[1].copy()
+            deposito = Deposito(valor_deposito)
+            deposito.registrar(conta_corrente)
             
         
         if entrada == '2':
-            valor_saque = int(input('Digite o valor de saque: '))
-            resultado = saque(saldo_conta, valor_saque, extrato_saque, LIMITE_SAQUE, numero_saques, limite_saque_diario)
-            if resultado[0] < saldo_conta:
-                numero_saques -= 1
-                saldo_conta = resultado[0]
-                extrato_saque = resultado[1].copy()
+            valor_saque = float(input('Digite o valor de saque: '))
+            saque = Saque(valor_saque)
+            saque.registrar(conta_corrente)
         
         if entrada == '3':
-            exibir_extrato(extrato_deposito, saque = extrato_saque)
+            print(conta_corrente.historico)
 
         if entrada == '4':
-            conta_corrente += 1
-            gerar_conta_corrente(cliente_logado, agencia, conta_corrente, contas)
+            numero_conta_corrente += 1
+            nova_conta_corrente = ContaCorrente()
+            nova_conta_corrente.nova_conta(cliente, numero_conta_corrente)
+            cliente.adicionar_conta(nova_conta_corrente)
 
         if entrada == '5':
-            listar_contas_corrente(contas)
+            print(cliente)
                     
         if entrada == 'q':
             break
