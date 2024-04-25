@@ -192,7 +192,7 @@ class Cliente:
         return self._contas
     
     def realizar_transacao(self, conta: Conta, transacao: Transacao):
-        pass
+        transacao.registrar(conta)
 
     def adicionar_conta(self, conta: Conta):
         self._contas.append(conta)
@@ -313,13 +313,13 @@ def main ():
         if entrada == '1':
             valor_deposito = float(input('Digite o valor para depósito: '))
             deposito = Deposito(valor_deposito)
-            deposito.registrar(conta_corrente)
+            cliente.realizar_transacao(conta_corrente, deposito)
             
         
         if entrada == '2':
             valor_saque = float(input('Digite o valor de saque: '))
             saque = Saque(valor_saque)
-            saque.registrar(conta_corrente)
+            cliente.realizar_transacao(conta_corrente, saque)
         
         if entrada == '3':
             print(conta_corrente.historico)
