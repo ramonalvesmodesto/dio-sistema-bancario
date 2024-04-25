@@ -185,6 +185,7 @@ class Cliente:
     def __init__(self, endereco: Endereco = ''):
         self._endereco = endereco
         self._contas = []
+        self._conta_principal = ''
 
     @property
     def endereco(self):
@@ -201,6 +202,18 @@ class Cliente:
     @property
     def contas(self):
         return self._contas
+    
+    @property
+    def conta_principal(self):
+        return self._conta_principal
+    
+    @conta_principal.setter
+    def conta_principal(self, conta):
+        self._conta_principal = conta
+
+    @conta_principal.deleter
+    def conta_principal(self):
+        self._conta_principal = ''
     
     def realizar_transacao(self, conta: Conta, transacao: Transacao):
         transacao.registrar(conta)
@@ -300,7 +313,7 @@ def main ():
     id_cliente_logado = ''
     cliente = Cliente()
     numero_conta_corrente = 1
-    conta_corrente = ContaCorrente()
+    conta_corrente = cliente.conta_principal
 
     while True:
         if id_cliente_logado == '':
@@ -321,9 +334,11 @@ def main ():
         if len(cliente.contas) == 0:
             opcao = str(input('\nVocê não possui uma conta corrente, deseja criar uma? 1 para sim, 2 para não \n=> '))
             if opcao == '1':
-                conta_corrente = ContaCorrente()
-                conta_corrente.nova_conta(cliente, numero_conta_corrente)
-                cliente.adicionar_conta(conta_corrente)
+                nova_conta_corrente = ContaCorrente()
+                nova_conta_corrente.nova_conta(cliente, numero_conta_corrente)
+                cliente.adicionar_conta(nova_conta_corrente)
+                cliente.conta_principal = nova_conta_corrente
+                conta_corrente = cliente.conta_principal
             else:
                 continue
 
