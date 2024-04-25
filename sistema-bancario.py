@@ -1,5 +1,5 @@
 import textwrap
-
+from abc import ABC, abstractmethod
 
 class Conta:
     def __init__(self, saldo, numero, agencia, cliente, historico):
@@ -35,6 +35,16 @@ class Conta:
             return False
         
         return True
+    
+class Transacao(ABC):
+    @abstractmethod
+    def registrar(conta):
+        pass
+    
+class Historico:
+    def adicionar_transacao(transacao):
+        pass
+
 
 
 def saque (saldo, valor, extrato, limite, numero_saques, limite_saques,/):
