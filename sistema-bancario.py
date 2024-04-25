@@ -54,10 +54,10 @@ class Conta:
         return True
     
 class ContaCorrente(Conta):
-    def __init__(self):
+    def __init__(self, limite = 500.0, limite_saques = 3):
         super().__init__()
-        self._limite = 500.0
-        self._limite_saques = 3
+        self._limite = limite
+        self._limite_saques = limite_saques
 
     @property
     def limite(self):
@@ -66,6 +66,21 @@ class ContaCorrente(Conta):
     @property
     def limite_saques(self):
         return self.limite_saques
+    
+    def sacar(self, valor):
+        calculo_saldo = super()._saldo - valor
+
+        if self._limite_saques == 0:
+            print(f'\nSeu limite de saque diário foi excedido! Seu limite de saque é {self._limite_saques}, e você esgotou seus saques diários')
+            return False
+        elif calculo_saldo < 0:            
+            print('\nNão foi possível autorizar o saque! O valor de saque excedeu seu saldo!')
+            return False
+        elif valor > self._limite:
+            print(f'\nNão foi possível realizar o saque! Seu limite de saque é: R${self._limite: .2f}')
+            return False
+        
+        return True
     
     def alterar_limite_saques(self, novo_limite_saque):
         self._limite_saques = novo_limite_saque
