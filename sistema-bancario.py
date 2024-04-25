@@ -77,6 +77,32 @@ class Transacao(ABC):
     @abstractmethod
     def registrar(conta):
         pass
+
+class Deposito(Transacao):
+    def __init__(self, valor):
+        self._valor = valor
+
+    @property
+    def valor(self):
+        return self._valor
+    
+    def registrar(self, conta: Conta):
+        if conta.depositar(self._valor):
+            conta.historico.adicionar_transacao(Deposito(self._valor))
+            conta.saldo(self.valor)
+
+class Saque(Transacao):
+    def __init__(self, valor):
+        self._valor = valor
+
+    @property
+    def valor(self):
+        return self._valor
+    
+    def registrar(self, conta: Conta):
+        if conta.sacar(self._valor):
+            conta.historico.adicionar_transacao(Saque(self._valor))
+            conta.saldo(-self._valor)
     
 class Historico:
     def __init__(self):
