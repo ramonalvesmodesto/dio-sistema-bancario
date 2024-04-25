@@ -53,6 +53,9 @@ class Conta:
         
         return True
     
+    def __str__(self):
+        return f"Agência: {self._agencia} \nC/C: {self._numero}\n"
+    
 class ContaCorrente(Conta):
     def __init__(self, limite = 500.0, limite_saques = 3):
         super().__init__()
@@ -106,6 +109,9 @@ class Deposito(Transacao):
             conta.historico.adicionar_transacao(Deposito(self._valor))
             conta.saldo(self.valor)
 
+    def __str__(self):
+        return f"Depósito: +{self._valor}"
+
 class Saque(Transacao):
     def __init__(self, valor):
         self._valor = valor
@@ -118,6 +124,9 @@ class Saque(Transacao):
         if conta.sacar(self._valor):
             conta.historico.adicionar_transacao(Saque(self._valor))
             conta.saldo(-self._valor)
+
+    def __str__(self):
+        return f"Saque: -{self._valor}"
     
 class Historico:
     def __init__(self):
@@ -153,6 +162,9 @@ class Endereco:
     @property
     def bairro(self):
         return self._bairro
+    
+    def __str__(self):
+        return f"Logradouro: {self._logradouro} \nNúmero: {self._numero} \nEstado: {self._estado} \nCidade: {self._cidade} \nBairro: {self._bairro}"
 
 class Cliente:
     def __init__(self, endereco: Endereco):
@@ -201,6 +213,9 @@ class PessoaFisica(Cliente):
     @property
     def data_nascimento(self):
         return self._data_nascimento
+    
+    def __str__(self):
+        return f"CPF: {self._cpf} \nNome: {self._nome} \nData de nascimento: {self._data_nascimento} "
 
 
 def saque (saldo, valor, extrato, limite, numero_saques, limite_saques,/):
