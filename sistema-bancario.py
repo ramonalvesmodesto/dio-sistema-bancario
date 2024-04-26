@@ -106,7 +106,7 @@ class Transacao(ABC):
         pass
 
 class Deposito(Transacao):
-    def __init__(self, valor=0):
+    def __init__(self, valor=0.0):
         self._valor = valor
 
     @property
@@ -127,7 +127,7 @@ class Deposito(Transacao):
         return f"Depósito: +{self._valor:.2f} - {datetime.now()}"
 
 class Saque(Transacao):
-    def __init__(self, valor=0):
+    def __init__(self, valor=0.0):
         self._valor = valor
 
     @property
@@ -368,9 +368,9 @@ def criar_conta(banco: Banco):
     banco.conta_corrente_cliente_sessao_logada = banco.cliente_logado.conta_principal
 
 def transacao(banco: Banco, transacao: Transacao):
-    valor = float(input(f'Digite o valor para {transacao.__class__.__name__}: '))
-    transacao.valor = valor
-    banco.cliente_logado.realizar_transacao(banco.conta_corrente_cliente_sessao_logada, transacao)
+    valor = float(input(f'Digite o valor para {transacao.__qualname__}: '))
+    nova_transacao = transacao(valor)
+    banco.cliente_logado.realizar_transacao(banco.conta_corrente_cliente_sessao_logada, nova_transacao)
 
 def cadastro():
     nome = input('Informe seu nome: ')
@@ -411,8 +411,8 @@ def main ():
         mostrar_menu_movimentacao_conta(banco.conta_corrente_cliente_sessao_logada.saldo, banco.ultimo_valor_deposito, banco.id_cliente_logado)
         entrada = str(input('Digite sua escolha: '))
         
-        if entrada == '1': transacao(banco, Deposito())      
-        if entrada == '2': transacao(banco, Saque())   
+        if entrada == '1': transacao(banco, Deposito)      
+        if entrada == '2': transacao(banco, Saque)   
         if entrada == '3': print(banco.conta_corrente_cliente_sessao_logada.historico)
         if entrada == '4': criar_conta(banco)
         if entrada == '5': print(banco.cliente_logado)
