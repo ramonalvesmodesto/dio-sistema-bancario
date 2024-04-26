@@ -361,8 +361,11 @@ def criar_conta(banco: Banco):
     nova_conta_corrente = ContaCorrente()
     nova_conta_corrente.nova_conta(banco.cliente_logado, banco.numero_conta_corrente)
     banco.numero_conta_corrente = 1
-    banco.cliente_logado.adicionar_conta(nova_conta_corrente)
+
     if len(banco.cliente_logado.contas) == 0: banco.cliente_logado.conta_principal = nova_conta_corrente
+
+    banco.cliente_logado.adicionar_conta(nova_conta_corrente)
+    banco.conta_corrente_cliente_sessao_logada = banco.cliente_logado.conta_principal
 
 def transacao(banco: Banco, transacao: Transacao):
     valor = float(input(f'Digite o valor para {transacao.__class__.__name__}: '))
