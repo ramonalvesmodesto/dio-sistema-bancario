@@ -155,6 +155,12 @@ class Historico:
     def adicionar_transacao(self, transacao: Transacao):
         self._transacoes.append(transacao)
 
+    def gerar_relatorio(self, tipo_transacao=None):
+        for transacao in self._transacoes:
+            if tipo_transacao == str(transacao.__class__.__name__): yield transacao
+            elif tipo_transacao == str(transacao.__class__.__name__): yield transacao
+            elif tipo_transacao == None: yield transacao
+
     def __str__(self) -> str:
         return f"\nExtrato: \n{', '.join([f'{transacao}' for transacao in self._transacoes])}"
 
@@ -262,7 +268,7 @@ class Banco:
         self._id_cliente_logado = None
         self._cliente_logado = Cliente()
         self._numero_conta_corrente = 1
-        self._conta_corrente_cliente_sessao_logada = ''
+        self._conta_corrente_cliente_sessao_logada: Conta = ''
 
     @property
     def ultimo_valor_deposito(self):
@@ -331,6 +337,16 @@ def mostrar_menu_login_cadastro ():
     '''
     print(textwrap.dedent(menu))
 
+def mostrar_menu_extrato ():
+    menu = '''
+    =============== Menu ===============         
+    [1] - Depósito
+    [2] - Saque
+    [3] - Saque e depósito 
+    ======================================
+    '''
+    print(textwrap.dedent(menu))
+
 def mostrar_menu_movimentacao_conta (saldo, deposito, usuario):
     menu = f'''\n
     =============== Menu ===============
@@ -369,6 +385,19 @@ def login(banco: Banco):
         print('\nUsuário não encontrado\n')   
     
     return cliente
+
+@log_transacao
+def exibir_extrato(conta_corrente: Historico):
+    mostrar_menu_extrato()
+    opcao = str(input('Escolha uma opção: '))
+    tipo = None
+
+    if opcao == '1': tipo = 'Deposito'
+    elif opcao == '2': tipo = 'Saque'
+
+    print("\nExtrato: ")
+    for transacao in conta_corrente.gerar_relatorio(tipo):
+        print(transacao)
 
 @log_transacao
 def criar_conta(banco: Banco):
@@ -429,7 +458,7 @@ def main ():
         
         if entrada == '1': transacao(banco, Deposito)      
         if entrada == '2': transacao(banco, Saque)   
-        if entrada == '3': print(banco.conta_corrente_cliente_sessao_logada.historico)
+        if entrada == '3': exibir_extrato(banco.conta_corrente_cliente_sessao_logada.historico)
         if entrada == '4': criar_conta(banco)
         if entrada == '5': print(banco.cliente_logado)
         if entrada == 'q': banco.id_cliente_logado = None
