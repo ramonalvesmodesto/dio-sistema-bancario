@@ -221,6 +221,9 @@ class Cliente:
     def adicionar_conta(self, conta: Conta):
         self._contas.append(conta)
 
+    def __str__(self) -> str:
+        return f"{self._endereco}, {self._conta_principal}, {self._contas}"
+
 
 class PessoaFisica(Cliente):
     def __init__(self, endereco: Endereco, cpf, nome, data_nascimento):
@@ -244,6 +247,72 @@ class PessoaFisica(Cliente):
     
     def __str__(self):
         return f"{', '.join([f'{conta}' for conta in self._contas])}\n"
+    
+class Banco:
+    def __init__(self):
+        self._ultimo_valor_deposito = 0
+        self._clientes = []
+        self._id_cliente_logado = None
+        self._cliente_logado = Cliente()
+        self._numero_conta_corrente = 1
+        self._conta_corrente_cliente_sessao_logada = ''
+
+    @property
+    def ultimo_valor_deposito(self):
+        return self._ultimo_valor_deposito
+
+    @property
+    def clientes(self):
+        return self._clientes
+    
+    @clientes.setter
+    def clientes(self, cliente: Cliente):
+        self._clientes.append(cliente)
+    
+    @property
+    def id_cliente_logado(self):
+        return self._id_cliente_logado
+    
+    @id_cliente_logado.setter
+    def id_cliente_logado(self, id):
+        self._id_cliente_logado = id
+    
+    @property
+    def cliente_logado(self):
+        return self._cliente_logado
+    
+    @cliente_logado.setter
+    def cliente_logado(self, cliente: Cliente):
+        if cliente != None:
+            self._cliente_logado = cliente
+            self._id_cliente_logado = cliente.cpf
+            self._conta_corrente_cliente_sessao_logada = cliente.conta_principal
+
+    @property
+    def numero_conta_corrente(self):
+        return self._numero_conta_corrente
+    
+    @numero_conta_corrente.setter
+    def numero_conta_corrente(self, numero):
+        self._numero_conta_corrente += numero
+
+    @property
+    def conta_corrente_cliente_sessao_logada (self):
+        return self._conta_corrente_cliente_sessao_logada
+    
+    @conta_corrente_cliente_sessao_logada.setter
+    def conta_corrente_cliente_sessao_logada (self, conta_corrente):
+        self._conta_corrente_cliente_sessao_logada = conta_corrente
+
+    def buscar_cliente(self, cpf):
+        for cliente in self._clientes:
+            if cliente.cpf == cpf:
+                return cliente
+        
+        return None
+    
+    def __str__(self):
+        return f"{self._cliente_logado}, {self.ultimo_valor_deposito}, {self._clientes}, {self._id_cliente_logado}, {self._numero_conta_corrente}, {self._conta_corrente_cliente_sessao_logada}"
 
 def menu_login_cadastro ():
     menu = '''
@@ -278,20 +347,15 @@ def menu_movimentacao_conta (saldo, deposito, usuario):
 
     return textwrap.dedent(menu)
 
-def existe_cadastro (cpf, usuarios):
-    for usuario in usuarios:
-        if usuario.cpf == cpf:
-            return True
-        
-    return False
-
-def login(usuarios):
+def login(banco: Banco):
     cpf = input('Insira seu CPF: ')
-    if existe_cadastro(cpf, usuarios):
-        return cpf
-    else:
-        print('\nUsuário não encontrado\n')
-
+    cliente = banco.buscar_cliente(cpf)
+    
+    if cliente == None:
+        print('\nUsuário não encontrado\n')   
+    
+    return cliente
+        
 def cadastro():
     nome = input('Informe seu nome: ')
     cpf = input('Informe seu CPF: ')
@@ -308,68 +372,63 @@ def cadastro():
     return cliente
 
 def main ():
-    valor_deposito = 0
-    usuarios = []
-    id_cliente_logado = ''
-    cliente = Cliente()
-    numero_conta_corrente = 1
-    conta_corrente = cliente.conta_principal
+    banco = Banco()
 
     while True:
-        if id_cliente_logado == '':
+        if banco.id_cliente_logado == None:
             print(menu_login_cadastro())
             opcao = str(input('Escolha uma opção: '))
 
             if opcao == '1':
-                id_cliente_logado = login(usuarios)
+                banco.cliente_logado = login(banco)
             elif opcao == '2':
                 cliente = cadastro()
-                id_cliente_logado = cliente.cpf
-                usuarios.append(cliente)
+                banco.clientes = cliente
             elif opcao == 'q':
                 break
 
             continue
 
-        if len(cliente.contas) == 0:
+        if len(banco.cliente_logado.contas) == 0:
             opcao = str(input('\nVocê não possui uma conta corrente, deseja criar uma? 1 para sim, 2 para não \n=> '))
             if opcao == '1':
                 nova_conta_corrente = ContaCorrente()
-                nova_conta_corrente.nova_conta(cliente, numero_conta_corrente)
-                cliente.adicionar_conta(nova_conta_corrente)
-                cliente.conta_principal = nova_conta_corrente
-                conta_corrente = cliente.conta_principal
+                nova_conta_corrente.nova_conta(banco.cliente_logado, banco.numero_conta_corrente)
+                banco.numero_conta_corrente = 1
+                banco.cliente_logado.adicionar_conta(nova_conta_corrente)
+                banco.cliente_logado.conta_principal = nova_conta_corrente
+                banco.conta_corrente_cliente_sessao_logada = banco.cliente_logado.conta_principal
             else:
                 continue
 
-        print(menu_movimentacao_conta(conta_corrente.saldo, valor_deposito, id_cliente_logado))
+        print(menu_movimentacao_conta(banco.conta_corrente_cliente_sessao_logada.saldo, banco.ultimo_valor_deposito, banco.id_cliente_logado))
         entrada = str(input('Digite sua escolha: '))
         
         if entrada == '1':
             valor_deposito = float(input('Digite o valor para depósito: '))
             deposito = Deposito(valor_deposito)
-            cliente.realizar_transacao(conta_corrente, deposito)
+            cliente.realizar_transacao(banco.conta_corrente_cliente_sessao_logada, deposito)
             
         
         if entrada == '2':
             valor_saque = float(input('Digite o valor de saque: '))
             saque = Saque(valor_saque)
-            cliente.realizar_transacao(conta_corrente, saque)
+            cliente.realizar_transacao(banco.conta_corrente_cliente_sessao_logada, saque)
         
         if entrada == '3':
-            print(conta_corrente.historico)
+            print(banco.conta_corrente_cliente_sessao_logada.historico)
 
         if entrada == '4':
-            numero_conta_corrente += 1
             nova_conta_corrente = ContaCorrente()
-            nova_conta_corrente.nova_conta(cliente, numero_conta_corrente)
-            cliente.adicionar_conta(nova_conta_corrente)
+            nova_conta_corrente.nova_conta(banco.cliente_logado, banco.numero_conta_corrente)
+            banco.numero_conta_corrente = 1
+            banco.cliente_logado.adicionar_conta(nova_conta_corrente)
 
         if entrada == '5':
-            print(cliente)
+            print(banco.cliente_logado)
                     
         if entrada == 'q':
-            id_cliente_logado = ''
+            banco.id_cliente_logado = None
 
 
 main()
