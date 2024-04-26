@@ -1,4 +1,4 @@
-from datetime import datetime 
+from datetime import datetime
 import textwrap
 from abc import ABC, abstractmethod
 
@@ -348,6 +348,19 @@ def mostrar_menu_movimentacao_conta (saldo, deposito, usuario):
     '''
     print(textwrap.dedent(menu))
 
+def log_transacao(func):
+    def exibir_log(name):
+        print(f"\n@Log {name} - datetime {datetime.fromisoformat('2011-11-04T00:05:23')}\n".title())
+
+    def time_transacao(*args, **kargs):
+        if func.__name__ == "transacao": exibir_log(args[1].__qualname__)
+        else: exibir_log(func.__name__)
+
+        return func(*args)
+    
+    return time_transacao
+
+@log_transacao
 def login(banco: Banco):
     cpf = input('Insira seu CPF: ')
     cliente = banco.buscar_cliente(cpf)
@@ -357,6 +370,7 @@ def login(banco: Banco):
     
     return cliente
 
+@log_transacao
 def criar_conta(banco: Banco):
     nova_conta_corrente = ContaCorrente()
     nova_conta_corrente.nova_conta(banco.cliente_logado, banco.numero_conta_corrente)
@@ -367,11 +381,13 @@ def criar_conta(banco: Banco):
     banco.cliente_logado.adicionar_conta(nova_conta_corrente)
     banco.conta_corrente_cliente_sessao_logada = banco.cliente_logado.conta_principal
 
+@log_transacao
 def transacao(banco: Banco, transacao: Transacao):
     valor = float(input(f'Digite o valor para {transacao.__qualname__}: '))
     nova_transacao = transacao(valor)
     banco.cliente_logado.realizar_transacao(banco.conta_corrente_cliente_sessao_logada, nova_transacao)
 
+@log_transacao
 def cadastro():
     nome = input('Informe seu nome: ')
     cpf = input('Informe seu CPF: ')
