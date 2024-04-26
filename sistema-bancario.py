@@ -321,7 +321,7 @@ class Banco:
     def __str__(self):
         return f"{self._cliente_logado}, {self.ultimo_valor_deposito}, {self._clientes}, {self._id_cliente_logado}, {self._numero_conta_corrente}, {self._conta_corrente_cliente_sessao_logada}"
 
-def menu_login_cadastro ():
+def mostrar_menu_login_cadastro ():
     menu = '''
     =============== Menu ===============         
     [1] - Fazer login
@@ -329,9 +329,9 @@ def menu_login_cadastro ():
     [q] - Sair 
     ======================================
     '''
-    return textwrap.dedent(menu)
+    print(textwrap.dedent(menu))
 
-def menu_movimentacao_conta (saldo, deposito, usuario):
+def mostrar_menu_movimentacao_conta (saldo, deposito, usuario):
     menu = f'''\n
     =============== Menu ===============
     Saldo: R${saldo: .2f}     
@@ -346,7 +346,7 @@ def menu_movimentacao_conta (saldo, deposito, usuario):
     [q] - \tSair
     ======================================         
     '''
-    return textwrap.dedent(menu)
+    print(textwrap.dedent(menu))
 
 def login(banco: Banco):
     cpf = input('Insira seu CPF: ')
@@ -392,42 +392,31 @@ def main ():
 
     while True:
         if banco.id_cliente_logado == None:
-            print(menu_login_cadastro())
+            mostrar_menu_login_cadastro()
             opcao = str(input('Escolha uma opção: '))
 
-            if opcao == '1':
-                banco.cliente_logado = login(banco)
-            elif opcao == '2':
+            if opcao == '1': banco.cliente_logado = login(banco)
+            elif opcao == '2': 
                 cliente = cadastro()
                 banco.clientes = cliente
-            elif opcao == 'q':
-                break
+            elif opcao == 'q': break
 
             continue
 
         if len(banco.cliente_logado.contas) == 0:
             opcao = str(input('\nVocê não possui uma conta corrente, deseja criar uma? 1 para sim, 2 para não \n=> '))
-            if opcao == '1':
-               criar_conta(banco)
-            else:
-                continue
+            if opcao == '1': criar_conta(banco)
+            else: continue
 
-        print(menu_movimentacao_conta(banco.conta_corrente_cliente_sessao_logada.saldo, banco.ultimo_valor_deposito, banco.id_cliente_logado))
+        mostrar_menu_movimentacao_conta(banco.conta_corrente_cliente_sessao_logada.saldo, banco.ultimo_valor_deposito, banco.id_cliente_logado)
         entrada = str(input('Digite sua escolha: '))
         
-        if entrada == '1':
-            transacao(banco, Deposito())      
-        if entrada == '2':
-            transacao(banco, Saque())        
-        if entrada == '3':
-            print(banco.conta_corrente_cliente_sessao_logada.historico)
-        if entrada == '4':
-            criar_conta(banco)
-        if entrada == '5':
-            print(banco.cliente_logado)
-        if entrada == 'q':
-            banco.id_cliente_logado = None
-
+        if entrada == '1': transacao(banco, Deposito())      
+        if entrada == '2': transacao(banco, Saque())   
+        if entrada == '3': print(banco.conta_corrente_cliente_sessao_logada.historico)
+        if entrada == '4': criar_conta(banco)
+        if entrada == '5': print(banco.cliente_logado)
+        if entrada == 'q': banco.id_cliente_logado = None
 
 main()
                 
