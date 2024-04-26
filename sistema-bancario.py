@@ -106,12 +106,16 @@ class Transacao(ABC):
         pass
 
 class Deposito(Transacao):
-    def __init__(self, valor):
+    def __init__(self, valor=0):
         self._valor = valor
 
     @property
     def valor(self):
         return self._valor
+    
+    @valor.setter
+    def valor(self, valor):
+        self._valor = valor
     
     def registrar(self, conta: Conta):
         if conta.depositar(self._valor):
@@ -123,12 +127,16 @@ class Deposito(Transacao):
         return f"Depósito: +{self._valor:.2f} - {datetime.now()}"
 
 class Saque(Transacao):
-    def __init__(self, valor):
+    def __init__(self, valor=0):
         self._valor = valor
 
     @property
     def valor(self):
         return self._valor
+    
+    @valor.setter
+    def valor(self, valor):
+        self._valor = valor
     
     def registrar(self, conta: Conta):
         if conta.sacar(self._valor):
@@ -224,7 +232,6 @@ class Cliente:
     def __str__(self) -> str:
         return f"{self._endereco}, {self._conta_principal}, {self._contas}"
 
-
 class PessoaFisica(Cliente):
     def __init__(self, endereco: Endereco, cpf, nome, data_nascimento):
         super().__init__(endereco)
@@ -316,21 +323,17 @@ class Banco:
 
 def menu_login_cadastro ():
     menu = '''
-    =============== Menu ===============
-            
+    =============== Menu ===============         
     [1] - Fazer login
     [2] - Realizar cadastro
-    [q] - Sair
-      
+    [q] - Sair 
     ======================================
     '''
-
     return textwrap.dedent(menu)
 
 def menu_movimentacao_conta (saldo, deposito, usuario):
     menu = f'''\n
     =============== Menu ===============
-
     Saldo: R${saldo: .2f}     
     Último Depósito: R${deposito: .2f}
     Usuário: {usuario}
@@ -341,10 +344,8 @@ def menu_movimentacao_conta (saldo, deposito, usuario):
     [4] - \tCriar Conta   
     [5] - \tExibir Contas     
     [q] - \tSair
-
     ======================================         
     '''
-
     return textwrap.dedent(menu)
 
 def login(banco: Banco):
@@ -355,7 +356,19 @@ def login(banco: Banco):
         print('\nUsuário não encontrado\n')   
     
     return cliente
-        
+
+def criar_conta(banco: Banco):
+    nova_conta_corrente = ContaCorrente()
+    nova_conta_corrente.nova_conta(banco.cliente_logado, banco.numero_conta_corrente)
+    banco.numero_conta_corrente = 1
+    banco.cliente_logado.adicionar_conta(nova_conta_corrente)
+    if len(banco.cliente_logado.contas) == 0: banco.cliente_logado.conta_principal = nova_conta_corrente
+
+def transacao(banco: Banco, transacao: Transacao):
+    valor = float(input(f'Digite o valor para {transacao.__class__.__name__}: '))
+    transacao.valor = valor
+    banco.cliente_logado.realizar_transacao(banco.conta_corrente_cliente_sessao_logada, transacao)
+
 def cadastro():
     nome = input('Informe seu nome: ')
     cpf = input('Informe seu CPF: ')
@@ -392,12 +405,7 @@ def main ():
         if len(banco.cliente_logado.contas) == 0:
             opcao = str(input('\nVocê não possui uma conta corrente, deseja criar uma? 1 para sim, 2 para não \n=> '))
             if opcao == '1':
-                nova_conta_corrente = ContaCorrente()
-                nova_conta_corrente.nova_conta(banco.cliente_logado, banco.numero_conta_corrente)
-                banco.numero_conta_corrente = 1
-                banco.cliente_logado.adicionar_conta(nova_conta_corrente)
-                banco.cliente_logado.conta_principal = nova_conta_corrente
-                banco.conta_corrente_cliente_sessao_logada = banco.cliente_logado.conta_principal
+               criar_conta(banco)
             else:
                 continue
 
@@ -405,28 +413,15 @@ def main ():
         entrada = str(input('Digite sua escolha: '))
         
         if entrada == '1':
-            valor_deposito = float(input('Digite o valor para depósito: '))
-            deposito = Deposito(valor_deposito)
-            cliente.realizar_transacao(banco.conta_corrente_cliente_sessao_logada, deposito)
-            
-        
+            transacao(banco, Deposito())      
         if entrada == '2':
-            valor_saque = float(input('Digite o valor de saque: '))
-            saque = Saque(valor_saque)
-            cliente.realizar_transacao(banco.conta_corrente_cliente_sessao_logada, saque)
-        
+            transacao(banco, Saque())        
         if entrada == '3':
             print(banco.conta_corrente_cliente_sessao_logada.historico)
-
         if entrada == '4':
-            nova_conta_corrente = ContaCorrente()
-            nova_conta_corrente.nova_conta(banco.cliente_logado, banco.numero_conta_corrente)
-            banco.numero_conta_corrente = 1
-            banco.cliente_logado.adicionar_conta(nova_conta_corrente)
-
+            criar_conta(banco)
         if entrada == '5':
             print(banco.cliente_logado)
-                    
         if entrada == 'q':
             banco.id_cliente_logado = None
 
