@@ -124,6 +124,7 @@ class Transacao(ABC):
 class Deposito(Transacao):
     def __init__(self, valor=0.0):
         self._valor = valor
+        self._data_hora_transacao = datetime.now().strftime('%d-%m-%Y, %H:%M:%S')
 
     @property
     def valor(self):
@@ -140,11 +141,12 @@ class Deposito(Transacao):
             print('\nDepósito realizado com sucesso!!\n')
 
     def __str__(self):
-        return f"Depósito: +{self._valor:.2f} - {datetime.now().strftime('%d-%m-%Y, %H:%M:%S')}"
+        return f"Depósito: +{self._valor:.2f} - {self._data_hora_transacao}"
 
 class Saque(Transacao):
     def __init__(self, valor=0.0):
         self._valor = valor
+        self._data_hora_transacao = datetime.now().strftime('%d-%m-%Y, %H:%M:%S')
 
     @property
     def valor(self):
@@ -162,7 +164,7 @@ class Saque(Transacao):
             print('\nSaque realizado com sucesso!!\n')
 
     def __str__(self):
-        return f"Saque: -{self._valor:.2f} - {datetime.now().strftime('%d-%m-%Y, %H:%M:%S')}"
+        return f"Saque: -{self._valor:.2f} - {self._data_hora_transacao}"
     
 class Historico:
     def __init__(self):
@@ -176,6 +178,9 @@ class Historico:
             if tipo_transacao == str(transacao.__class__.__name__): yield transacao
             elif tipo_transacao == str(transacao.__class__.__name__): yield transacao
             elif tipo_transacao == None: yield transacao
+
+    def transacoes_do_dia(sel):
+        pass
 
     def __str__(self) -> str:
         return f"\nExtrato: \n{', '.join([f'{transacao}' for transacao in self._transacoes])}"
