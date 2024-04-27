@@ -1,6 +1,14 @@
 from datetime import datetime
-import textwrap
 from abc import ABC, abstractmethod
+
+import textwrap
+
+import os
+import shutil
+from pathlib import Path
+
+
+ROOT_PATH = Path(__file__).parent
 
 class ContaIterador:
     def __init__(self, contas):
@@ -105,6 +113,9 @@ class ContaCorrente(Conta):
 
     def alterar_limite(self, novo_limite):
         self._limite = novo_limite
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__}: ('{self.agencia}', '{self.numero}', '{self.cliente.nome}')>"
     
 class Transacao(ABC):
     @abstractmethod
@@ -136,6 +147,9 @@ class Deposito(Transacao):
 
     def __str__(self):
         return f"Depósito: +{self._valor:.2f} - {self._data_hora_transacao}"
+    
+    def __repr__(self):
+        return f"<{self.__class__.__name__}: ('{self.data_hora_transacao}')>"
 
 class Saque(Transacao):
     def __init__(self, valor=0.0):
@@ -163,9 +177,16 @@ class Saque(Transacao):
     def __str__(self):
         return f"Saque: -{self._valor:.2f} - {self._data_hora_transacao}"
     
+    def __repr__(self):
+        return f"<{self.__class__.__name__}: ('{self.data_hora_transacao}')>"
+    
 class Historico:
     def __init__(self):
         self._transacoes = []
+
+    @property
+    def transacoes(self):
+        return self._transacoes
 
     def adicionar_transacao(self, transacao: Transacao):
         self._transacoes.append(transacao)
@@ -186,7 +207,10 @@ class Historico:
         return transacoes
 
     def __str__(self) -> str:
-        return f"\nExtrato: \n{', '.join([f'{transacao}' for transacao in self._transacoes])}"
+        return f"\nExtrato: \n{', '.join([f'{transacao}' for transacao in self.transacoes])}"
+    
+    def __repr__(self):
+        return f"<{self.__class__.__name__}: ('{self._transacoes}')>"
 
 class Endereco:
     def __init__(self, logradouro, numero, estado, cidade, bairro):
@@ -289,6 +313,9 @@ class PessoaFisica(Cliente):
     def __str__(self):
         return f"{', '.join([f'{conta}' for conta in self._contas])}\n"
     
+    def __repr__(self):
+        return f"<{self.__class__.__name__}: ('{self.cpf}')>"
+    
 class Banco:
     def __init__(self):
         self._ultimo_valor_deposito = 0
@@ -354,6 +381,9 @@ class Banco:
     
     def __str__(self):
         return f"{self._cliente_logado}, {self.ultimo_valor_deposito}, {self._clientes}, {self._id_cliente_logado}, {self._numero_conta_corrente}, {self._conta_corrente_cliente_sessao_logada}"
+    
+    def __repr__(self):
+        return f"<{self.__class__.__name__}: ('{self.cliente_logado}', '{self.numero_conta_corrente}', '{self.conta_corrente_cliente_sessao_logada}')>"
 
 def mostrar_menu_login_cadastro ():
     menu = '''
@@ -394,15 +424,17 @@ def mostrar_menu_movimentacao_conta (saldo, deposito, usuario):
     print(textwrap.dedent(menu))
 
 def log_transacao(func):
-    def exibir_log(name):
-        print(f"\n@Log {name} - datetime {datetime.now().strftime('%d-%m-%Y, %H:%M:%S')}\n".title())
+    def registrar(mode, args):
+        with open(ROOT_PATH/"log.txt", mode, newline='') as log:
+                log.writelines([f'@Log Hora: {datetime.now().strftime("%d-%m-%Y, %H:%M:%S")}', f'\tFunção: {func.__qualname__.upper()}', f'\tArgumentos: {args}\n\n'])
 
-    def time_transacao(*args, **kargs):
-        if func.__name__ == "transacao": exibir_log(args[1].__qualname__)
-        else: exibir_log(func.__name__)
-        
+    def registro_transacao(*args, **kargs):
+        if os.path.exists(ROOT_PATH/"log.txt"):
+            registrar('a', args)
+        else:
+            registrar('w', args)
         return func(*args)
-    return time_transacao
+    return registro_transacao
 
 @log_transacao
 def login(banco: Banco):
