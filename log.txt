@@ -1,0 +1,38 @@
+[27-04-2024 18:30:36] Função: CADASTRO Argumentos: ()
+
+[27-04-2024 18:30:48] Função: LOGIN Argumentos: (<Banco: ('1', '')>,)
+
+[27-04-2024 18:30:51] Função: LOGIN Argumentos: (<Banco: ('1', '')>,)
+
+[27-04-2024 18:30:54] Função: CRIAR_CONTA Argumentos: (<Banco: ('1', '')>,)
+
+[27-04-2024 18:46:22] Função: CADASTRO Argumentos: (<Banco: ('1', '')>,)
+
+[27-04-2024 18:46:27] Função: LOGIN Argumentos: (<Banco: ('1', '')>,)
+
+[27-04-2024 18:46:29] Função: CRIAR_CONTA Argumentos: (<Banco: ('1', '')>,)
+
+[27-04-2024 19:07:22] Função: LOGIN Argumentos: (<Banco: ('1', '')>, '1')
+
+[27-04-2024 19:07:28] Função: CADASTRO_CLIENTE Argumentos: (<Banco: ('1', '')>, '1', '1', '1')
+
+[27-04-2024 19:07:28] Função: CADASTRO_ENDERECO Argumentos: (<__main__.Cliente object at 0x77f4b59e17d0>, '1', '1', '1', '1', '1')
+
+[27-04-2024 19:09:18] Função: LOGIN Argumentos: (<Banco: ('1', '')>, '1')
+
+[27-04-2024 19:09:22] Função: CADASTRO_CLIENTE Argumentos: (<Banco: ('1', '')>, '1', '1', '1')
+
+[27-04-2024 19:09:22] Função: CADASTRO_ENDERECO Argumentos: (<__main__.Cliente object at 0x7b0125c055d0>, '1', '1', '1', '1', '1')
+
+[27-04-2024 19:09:24] Função: LOGIN Argumentos: (<Banco: ('1', '')>, '1')
+
+[27-04-2024 19:09:25] Função: CRIAR_CONTA Argumentos: (<Banco: ('1', '')>,)
+
+[27-04-2024 19:09:28] Função: TRANSACAO Argumentos: (<Banco: ('2', 'Agência: 0001 C/C: 1')>, <class '__main__.Deposito'>, 2323.0)
+
+[27-04-2024 19:09:33] Função: TRANSACAO Argumentos: (<Banco: ('2', 'Agência: 0001 C/C: 1')>, <class '__main__.Saque'>, 32.0)
+
+[27-04-2024 19:09:45] Função: EXIBIR_EXTRATO Argumentos: (<Historico: ('[<Deposito: ('27-04-2024, 19:09:28')>, <Saque: ('27-04-2024, 19:09:33')>]')>,)
+
+[27-04-2024 19:11:20] Função: TRANSACAO Argumentos: (<Banco: ('2', 'Agência: 0001 C/C: 1')>, <class '__main__.Deposito'>, 232.0)
+
