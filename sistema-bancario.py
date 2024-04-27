@@ -61,8 +61,11 @@ class Conta:
 
     def sacar(self, valor):
         calculo_saldo = self._saldo - valor
-        if calculo_saldo <= 0:
+        if calculo_saldo < 0:
             print('\nNão foi possível autorizar o saque! O valor de saque excedeu seu saldo!\n')
+            return False
+        elif valor > self._limite:
+            print(f'\nNão foi possível realizar o saque! Seu limite de saque é: R${self._limite: .2f}')
             return False
         
         return True
@@ -78,7 +81,7 @@ class Conta:
         return f"Agência: {self._agencia} C/C: {self._numero}"
     
 class ContaCorrente(Conta):
-    def __init__(self, limite = 500.0, limite_saques = 3):
+    def __init__(self, limite = 500.0, limite_saques = 10):
         super().__init__()
         self._limite = limite
         self._limite_saques = limite_saques
@@ -89,26 +92,7 @@ class ContaCorrente(Conta):
     
     @property
     def limite_saques(self):
-        return self.limite_saques
-    
-    @limite.setter
-    def limite_saques(self, valor):
-        self._limite_saques -= valor
-    
-    def sacar(self, valor):
-        calculo_saldo = self._saldo - valor
-
-        if calculo_saldo <= 0:
-            print('\nNão foi possível autorizar o saque! O valor de saque excedeu seu saldo!\n')
-            return False
-        elif self._limite_saques == 0:
-            print(f'\nSeu limite de saque diário foi excedido! Seu limite de saque é {self._limite_saques}, e você esgotou seus saques diários')
-            return False
-        elif valor > self._limite:
-            print(f'\nNão foi possível realizar o saque! Seu limite de saque é: R${self._limite: .2f}')
-            return False
-        
-        return True
+        return self._limite_saques
     
     def alterar_limite_saques(self, novo_limite_saque):
         self._limite_saques = novo_limite_saque
@@ -133,6 +117,10 @@ class Deposito(Transacao):
     @valor.setter
     def valor(self, valor):
         self._valor = valor
+
+    @property
+    def data_hora_transacao(self):
+        return self._data_hora_transacao
     
     def registrar(self, conta: Conta):
         if conta.depositar(self._valor):
@@ -155,12 +143,15 @@ class Saque(Transacao):
     @valor.setter
     def valor(self, valor):
         self._valor = valor
+
+    @property
+    def data_hora_transacao(self):
+        return self._data_hora_transacao
     
     def registrar(self, conta: Conta):
         if conta.sacar(self._valor):
             conta.historico.adicionar_transacao(Saque(self._valor))
             conta.saldo = -self._valor
-            conta.limite_saques = 1
             print('\nSaque realizado com sucesso!!\n')
 
     def __str__(self):
@@ -179,8 +170,14 @@ class Historico:
             elif tipo_transacao == str(transacao.__class__.__name__): yield transacao
             elif tipo_transacao == None: yield transacao
 
-    def transacoes_do_dia(sel):
-        pass
+    def transacoes_do_dia(self, tipo_transacao):
+        data_atual = datetime.now().date()
+        transacoes = []
+
+        for transacao in self._transacoes:
+            if datetime.strptime(transacao.data_hora_transacao, "%d-%m-%Y, %H:%M:%S").date() == data_atual and transacao.__class__.__name__ == tipo_transacao:
+                transacoes.append(transacao)
+        return transacoes
 
     def __str__(self) -> str:
         return f"\nExtrato: \n{', '.join([f'{transacao}' for transacao in self._transacoes])}"
@@ -251,7 +248,11 @@ class Cliente:
         self._conta_principal = ''
     
     def realizar_transacao(self, conta: Conta, transacao: Transacao):
-        transacao.registrar(conta)
+        tipo_transacao = transacao.__class__.__name__
+        transacoes_do_dia = conta.historico.transacoes_do_dia(tipo_transacao)
+        
+        if len(transacoes_do_dia) < conta.limite_saques: transacao.registrar(conta)
+        else: print(f"\nVocê excedeu o limite de {conta.limite_saques} {tipo_transacao}s")
 
     def adicionar_conta(self, conta: Conta):
         self._contas.append(conta)
