@@ -13,10 +13,16 @@ class ContaIterador:
     def __next__(self):
         try:
             conta = self._contas[self._contador]
-            self._contador += 1
-            return conta
+            return textwrap.dedent(f'''
+                Nome: {conta.cliente.nome}
+                C/C: {conta.numero}
+                Agência: {conta.agencia}
+                Saldo: {conta.saldo}
+            ''')
         except IndexError:
             raise StopIteration 
+        finally:
+            self._contador += 1
 
 class Conta:
     def __init__(self):
@@ -351,11 +357,12 @@ class Banco:
 
 def mostrar_menu_login_cadastro ():
     menu = '''
-    =============== Menu ===============         
+    ================ Menu ================         
     [1] - Fazer login
     [2] - Realizar cadastro
+    [3] - Exibir contas clientes do banco
     [q] - Sair 
-    ======================================
+    =======================================
     '''
     print(textwrap.dedent(menu))
 
@@ -407,14 +414,14 @@ def login(banco: Banco):
     
     return cliente
 
-def exibir_contas(contas: Conta):
+def exibir_contas_cliente(contas: Conta):
     for conta in ContaIterador(contas):
-        print(textwrap.dedent(f'''
-            Nome: {conta.cliente.nome}
-            C/C: {conta.numero}
-            Agência: {conta.agencia}
-            Saldo: {conta.saldo}
-        '''))
+        print(conta)
+
+def exibir_contas_clientes_banco(banco: Banco):
+    for cliente in banco.clientes:
+        for conta in ContaIterador(cliente.contas):
+            print(conta)
 
 @log_transacao
 def exibir_extrato(conta_corrente: Historico):
@@ -474,6 +481,7 @@ def main ():
             elif opcao == '2': 
                 cliente = cadastro()
                 banco.clientes = cliente
+            elif opcao == '3': exibir_contas_clientes_banco(banco)
             elif opcao == 'q': break
 
             continue
@@ -490,7 +498,7 @@ def main ():
         if entrada == '2': transacao(banco, Saque)   
         if entrada == '3': exibir_extrato(banco.conta_corrente_cliente_sessao_logada.historico)
         if entrada == '4': criar_conta(banco)
-        if entrada == '5': exibir_contas(banco.cliente_logado.contas)
+        if entrada == '5': exibir_contas_cliente(banco.cliente_logado.contas)
         if entrada == 'q': banco.id_cliente_logado = None
 
 main()
