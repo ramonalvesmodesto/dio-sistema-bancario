@@ -2,6 +2,22 @@ from datetime import datetime
 import textwrap
 from abc import ABC, abstractmethod
 
+class ContaIterador:
+    def __init__(self, contas):
+        self._contas = contas
+        self._contador = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        try:
+            conta = self._contas[self._contador]
+            self._contador += 1
+            return conta
+        except IndexError:
+            raise StopIteration 
+
 class Conta:
     def __init__(self):
         self._saldo = 0
@@ -371,9 +387,8 @@ def log_transacao(func):
     def time_transacao(*args, **kargs):
         if func.__name__ == "transacao": exibir_log(args[1].__qualname__)
         else: exibir_log(func.__name__)
-
+        
         return func(*args)
-    
     return time_transacao
 
 @log_transacao
@@ -385,6 +400,15 @@ def login(banco: Banco):
         print('\nUsuário não encontrado\n')   
     
     return cliente
+
+def exibir_contas(contas: Conta):
+    for conta in ContaIterador(contas):
+        print(textwrap.dedent(f'''
+            Nome: {conta.cliente.nome}
+            C/C: {conta.numero}
+            Agência: {conta.agencia}
+            Saldo: {conta.saldo}
+        '''))
 
 @log_transacao
 def exibir_extrato(conta_corrente: Historico):
@@ -460,7 +484,7 @@ def main ():
         if entrada == '2': transacao(banco, Saque)   
         if entrada == '3': exibir_extrato(banco.conta_corrente_cliente_sessao_logada.historico)
         if entrada == '4': criar_conta(banco)
-        if entrada == '5': print(banco.cliente_logado)
+        if entrada == '5': exibir_contas(banco.cliente_logado.contas)
         if entrada == 'q': banco.id_cliente_logado = None
 
 main()
