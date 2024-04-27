@@ -140,7 +140,7 @@ class Deposito(Transacao):
             print('\nDepósito realizado com sucesso!!\n')
 
     def __str__(self):
-        return f"Depósito: +{self._valor:.2f} - {datetime.now()}"
+        return f"Depósito: +{self._valor:.2f} - {datetime.now().strftime('%d-%m-%Y, %H:%M:%S')}"
 
 class Saque(Transacao):
     def __init__(self, valor=0.0):
@@ -162,7 +162,7 @@ class Saque(Transacao):
             print('\nSaque realizado com sucesso!!\n')
 
     def __str__(self):
-        return f"Saque: -{self._valor:.2f} - {datetime.now()}"
+        return f"Saque: -{self._valor:.2f} - {datetime.now().strftime('%d-%m-%Y, %H:%M:%S')}"
     
 class Historico:
     def __init__(self):
@@ -382,7 +382,7 @@ def mostrar_menu_movimentacao_conta (saldo, deposito, usuario):
 
 def log_transacao(func):
     def exibir_log(name):
-        print(f"\n@Log {name} - datetime {datetime.fromisoformat('2011-11-04T00:05:23')}\n".title())
+        print(f"\n@Log {name} - datetime {datetime.now().strftime('%d-%m-%Y, %H:%M:%S')}\n".title())
 
     def time_transacao(*args, **kargs):
         if func.__name__ == "transacao": exibir_log(args[1].__qualname__)
