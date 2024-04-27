@@ -383,7 +383,7 @@ class Banco:
         return f"{self._cliente_logado}, {self.ultimo_valor_deposito}, {self._clientes}, {self._id_cliente_logado}, {self._numero_conta_corrente}, {self._conta_corrente_cliente_sessao_logada}"
     
     def __repr__(self):
-        return f"<{self.__class__.__name__}: ('{self.cliente_logado}', '{self.numero_conta_corrente}', '{self.conta_corrente_cliente_sessao_logada}')>"
+        return f"<{self.__class__.__name__}: ('{self.numero_conta_corrente}', '{self.conta_corrente_cliente_sessao_logada}')>"
 
 def mostrar_menu_login_cadastro ():
     menu = '''
@@ -426,7 +426,7 @@ def mostrar_menu_movimentacao_conta (saldo, deposito, usuario):
 def log_transacao(func):
     def registrar(mode, args):
         with open(ROOT_PATH/"log.txt", mode, newline='') as log:
-                log.writelines([f'@Log Hora: {datetime.now().strftime("%d-%m-%Y, %H:%M:%S")}', f'\tFunção: {func.__qualname__.upper()}', f'\tArgumentos: {args}\n\n'])
+                log.write(f'[{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}] Função: {func.__name__.upper()} Argumentos: {args}\n\n')
 
     def registro_transacao(*args, **kargs):
         if os.path.exists(ROOT_PATH/"log.txt"):
