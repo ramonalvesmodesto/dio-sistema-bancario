@@ -36,3 +36,11 @@
 
 [27-04-2024 19:11:20] Função: TRANSACAO Argumentos: (<Banco: ('2', 'Agência: 0001 C/C: 1')>, <class '__main__.Deposito'>, 232.0)
 
+[27-04-2024 22:37:22] Função: CADASTRO_CLIENTE Argumentos: (<Banco: ('1', '')>, '1', '1', '1')
+
+[27-04-2024 22:37:22] Função: CADASTRO_ENDERECO Argumentos: (<__main__.Cliente object at 0x7d7451334610>, '1', '1', '1', '1', '1')
+
+[27-04-2024 22:37:24] Função: LOGIN Argumentos: (<Banco: ('1', '')>, '1')
+
+[27-04-2024 22:37:25] Função: CRIAR_CONTA Argumentos: (<Banco: ('1', '')>,)
+

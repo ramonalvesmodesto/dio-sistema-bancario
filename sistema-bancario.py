@@ -7,6 +7,8 @@ import os
 import shutil
 from pathlib import Path
 
+from menu import mostrar_menu_login_cadastro, mostrar_menu_extrato, mostrar_menu_movimentacao_conta
+
 
 ROOT_PATH = Path(__file__).parent
 
@@ -384,44 +386,6 @@ class Banco:
     
     def __repr__(self):
         return f"<{self.__class__.__name__}: ('{self.numero_conta_corrente}', '{self.conta_corrente_cliente_sessao_logada}')>"
-
-def mostrar_menu_login_cadastro ():
-    menu = '''
-    ================ Menu ================         
-    [1] - Fazer login
-    [2] - Realizar cadastro
-    [3] - Exibir contas clientes do banco
-    [q] - Sair 
-    =======================================
-    '''
-    print(textwrap.dedent(menu))
-
-def mostrar_menu_extrato ():
-    menu = '''
-    =============== Menu ===============         
-    [1] - Depósito
-    [2] - Saque
-    [3] - Saque e depósito 
-    ======================================
-    '''
-    print(textwrap.dedent(menu))
-
-def mostrar_menu_movimentacao_conta (saldo, deposito, usuario):
-    menu = f'''\n
-    =============== Menu ===============
-    Saldo: R${saldo: .2f}     
-    Último Depósito: R${deposito: .2f}
-    Usuário: {usuario}
-
-    [1] - \tDepósito       
-    [2] - \tSaque          
-    [3] - \tExtrato
-    [4] - \tCriar Conta   
-    [5] - \tExibir Contas     
-    [q] - \tSair
-    ======================================         
-    '''
-    print(textwrap.dedent(menu))
 
 def log_transacao(func):
     def registrar(mode, args):
