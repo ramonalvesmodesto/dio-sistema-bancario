@@ -10,3 +10,5 @@
 
 # Otimizações
 - Iterator e geradores
+
+![Código](./img/code.png)
