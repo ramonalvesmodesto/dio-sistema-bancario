@@ -52,7 +52,7 @@ def exibir_contas_clientes_banco(banco: Banco):
 
 
 @log_transacao
-def exibir_extrato(conta_corrente: Historico, tipo=None):
+def exibir_extrato(conta_corrente: Historico, tipo):
     print("\nExtrato: ")
     for transacao in conta_corrente.gerar_relatorio(tipo):
         print(transacao)
@@ -156,9 +156,14 @@ def main():
             )
             transacao(banco, Saque, valor)
         if entrada == "3":
+            tipo = None
             mostrar_menu_extrato()
             opcao = str(input("Escolha uma opção: "))
-            exibir_extrato(banco.conta_corrente_cliente_sessao_logada.historico, opcao)
+
+            if opcao == '1': tipo = 'Deposito'
+            elif opcao == '2': tipo = 'Saque'
+
+            exibir_extrato(banco.conta_corrente_cliente_sessao_logada.historico, tipo)
         if entrada == "4":
             criar_conta(banco)
         if entrada == "5":
