@@ -1,5 +1,8 @@
+from src.model.endereco import EnderecoModel
+
+
 class ClienteModel:
-    def __init__(self, endereco: Endereco = ""):
+    def __init__(self, endereco: EnderecoModel = ""):
         self._endereco = endereco
         self._contas = []
         self._conta_principal = ""

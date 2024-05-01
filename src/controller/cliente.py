@@ -1,3 +1,4 @@
+from src.model.endereco import EnderecoModel
 from src.model.conta import ContaModel
 from src.model.transacao import TransacaoModel
 from src.model.cliente import ClienteModel
@@ -5,7 +6,7 @@ from src.view.cliente import ClienteView
 
 
 class ClienteController(ClienteModel):
-    def __init__(self, endereco: Endereco = ""):
+    def __init__(self, endereco: EnderecoModel = ""):
         super().__init__(endereco)
         self.view = ClienteView
 
