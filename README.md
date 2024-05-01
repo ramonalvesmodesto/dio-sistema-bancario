@@ -1,7 +1,7 @@
 # Projeto sistema báncario :credit_card:
 - Aplicado paradigma funcional
 - Aplicado paradigma orientado a objetos
-- Aplicado design pattern decorator
+- Aplicado design pattern decorator e mvc
 
 # O que foi feito :computer:
 - Cadastro de cliente
