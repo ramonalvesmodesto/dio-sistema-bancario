@@ -12,7 +12,7 @@ def exibir_extrato(banco: BancoController):
     if opcao == '1': tipo = 'DespositoController'
     elif opcao == '2': tipo = 'SaqueController'
 
-    banco.listar_extrato(banco.conta_corrente_cliente_sessao_logada.historico, tipo)
+    banco.listar_extrato(banco.cliente_logado.conta.historico, tipo)
 
 def transacao(banco: BancoController, tipo: TransacaoModel):
     valor = float(
@@ -43,7 +43,8 @@ def cadastrar_cliente(banco: BancoController):
         'bairro': bairro
     }
     
-    banco.cadastro_cliente(cpf, nome, data_nascimento, endereco)
+    cliente = banco.cadastro_cliente(cpf, nome, data_nascimento, endereco)
+    banco.criar_conta(cliente)
 
 def main():
     banco = BancoController()
@@ -60,19 +61,8 @@ def main():
 
             continue
 
-        if len(banco.cliente_logado.contas) == 0:
-            opcao = str(
-                input(
-                    "\nVocê não possui uma conta corrente, deseja criar uma? 1 para sim, 2 para não \n=> "
-                )
-            )
-            if opcao == "1":
-                banco.criar_conta()
-            else:
-                continue
-
         mostrar_menu_movimentacao_conta(
-            banco.conta_corrente_cliente_sessao_logada.saldo,
+            banco.cliente_logado.conta.saldo,
             banco.ultimo_valor_deposito,
             banco.id_cliente_logado,
         )
@@ -81,7 +71,7 @@ def main():
         if entrada == "1": transacao(banco, DespositoController)
         if entrada == "2": transacao(banco, SaqueController)
         if entrada == "3": exibir_extrato(banco)
-        if entrada == "4": banco.cliente_logado.listar_conta(banco.conta_corrente_cliente_sessao_logada)
+        if entrada == "4": banco.cliente_logado.listar_conta()
         if entrada == "q": banco.id_cliente_logado = None
 
 

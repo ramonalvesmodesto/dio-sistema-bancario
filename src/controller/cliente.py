@@ -27,12 +27,12 @@ class ClienteController(ClienteModel):
         self.endereco = endereco
 
     @log_banco
-    def listar_conta(self, conta):
-        self.view.exibir_conta(conta)
+    def listar_conta(self):
+        self.view.exibir_conta(self.conta)
 
 
     def adicionar_conta(self, conta: ContaModel):
-        self.contas.append(conta)
+        self.conta = conta
 
     def __str__(self) -> str:
         return f"{self._endereco}, {self._conta_principal}, {self._contas}"

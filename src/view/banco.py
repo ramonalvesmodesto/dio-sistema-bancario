@@ -7,5 +7,4 @@ class BancoView:
     @log_banco
     def exibir_contas(self, clientes):
         for cliente in clientes:
-            for conta in ContaIteratorController(cliente.contas):
-                print(conta)
+            cliente.listar_conta()

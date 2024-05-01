@@ -40,8 +40,7 @@ class BancoModel:
         if cliente is not None:
             self._cliente_logado = cliente
             self._id_cliente_logado = cliente.cpf
-            self._conta_corrente_cliente_sessao_logada = cliente.conta_principal
-
+            
     @property
     def numero_conta_corrente(self):
         return self._numero_conta_corrente

@@ -29,29 +29,25 @@ class BancoController(BancoModel):
         return cliente
 
     @log_banco
-    def criar_conta(self):
+    def criar_conta(self, cliente: ClienteController):
         nova_conta_corrente = ContaCorrenteController()
-        nova_conta_corrente.nova_conta(self.cliente_logado, self.numero_conta_corrente)
+        nova_conta_corrente.nova_conta(cliente, self.numero_conta_corrente)
         self.numero_conta_corrente = 1
-
-        if len(self.cliente_logado.contas) == 0:
-            self.cliente_logado.conta_principal = nova_conta_corrente
-
-        self.cliente_logado.adicionar_conta(nova_conta_corrente)
-        self.conta_corrente_cliente_sessao_logada = self.cliente_logado.conta_principal
+        cliente.adicionar_conta(nova_conta_corrente)
 
     @log_banco
     def transacao(self, transacao: TransacaoModel, valor):
         nova_transacao = transacao(valor)
         self.cliente_logado.realizar_transacao(
-            self.conta_corrente_cliente_sessao_logada, nova_transacao
+            self.cliente_logado.conta, nova_transacao
         )
 
     @log_banco
     def cadastro_cliente(self, cpf, nome, data_nascimento, endereco):
         endereco = EnderecoModel(endereco['logradouro'], endereco['numero'], endereco['estado'], endereco['cidade'], endereco['bairro'])
         cliente = ClienteController(cpf, nome, data_nascimento, endereco)
-        self.clientes = cliente
+        self.clientes = cliente    
+        return cliente    
 
     @log_banco
     def listar_clientes(self):
@@ -59,7 +55,7 @@ class BancoController(BancoModel):
 
     @log_banco
     def listar_extrato(self, historico, tipo):
-        self.conta_corrente_cliente_sessao_logada.historico.listar_historico_transacoes(historico, tipo)
+        self.cliente_logado.conta.historico.listar_historico_transacoes(historico, tipo)
 
     def __str__(self):
         return f"{self._cliente_logado}, {self.ultimo_valor_deposito}, {self._clientes}, {self._id_cliente_logado}, \

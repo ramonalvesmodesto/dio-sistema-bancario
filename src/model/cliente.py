@@ -6,8 +6,7 @@ class ClienteModel(PessoaFisicaModel):
     def __init__(self, cpf, nome, data_nascimento, endereco: EnderecoModel = ""):
         super().__init__(cpf, nome, data_nascimento)
         self._endereco = endereco
-        self._contas = []
-        self._conta_principal = ""
+        self._conta = ""
 
     @property
     def endereco(self):
@@ -22,21 +21,10 @@ class ClienteModel(PessoaFisicaModel):
         self._endereco = ""
 
     @property
-    def contas(self):
-        return self._contas
+    def conta(self):
+        return self._conta
     
-    @contas.setter
-    def contas(self, contas):
-        self._contas = contas
+    @conta.setter
+    def conta(self, conta):
+        self._conta = conta
 
-    @property
-    def conta_principal(self):
-        return self._conta_principal
-
-    @conta_principal.setter
-    def conta_principal(self, conta):
-        self._conta_principal = conta
-
-    @conta_principal.deleter
-    def conta_principal(self):
-        self._conta_principal = ""
