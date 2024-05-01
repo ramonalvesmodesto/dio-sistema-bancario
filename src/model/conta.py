@@ -41,3 +41,25 @@ class ContaModel:
     @property
     def historico(self):
         return self._historico
+    
+class ContaCorrenteModel(ContaModel):
+    def __init__(self, limite=500.0, limite_saques=10):
+        super().__init__()
+        self._limite = limite
+        self._limite_saques = limite_saques
+
+    @property
+    def limite(self):
+        return self._limite
+    
+    @limite.setter
+    def cliente(self, limite):
+        self._limite = limite
+
+    @property
+    def limite_saques(self):
+        return self._limite_saques
+    
+    @limite_saques.setter
+    def cliente(self, limite_saques):
+        self._limite_saques = limite_saques
