@@ -30,15 +30,15 @@ class ContaController(ContaModel):
     def __str__(self):
         return f"Agência: {self.agencia} C/C: {self.numero}"
     
-    class ContaCorrenteController(ContaCorrenteModel):
-        def __init__(self) -> None:
-            super().__init__()
+class ContaCorrenteController(ContaCorrenteModel):
+    def __init__(self) -> None:
+        super().__init__()
             
-        def alterar_limite_saques(self, novo_limite_saque):
-            self.limite_saques = novo_limite_saque
+    def alterar_limite_saques(self, novo_limite_saque):
+        self.limite_saques = novo_limite_saque
 
-        def alterar_limite(self, novo_limite):
-            self.limite = novo_limite
+    def alterar_limite(self, novo_limite):
+        self.limite = novo_limite
 
-        def __repr__(self):
-            return f"<{self.__class__.__name__}: ('{self.agencia}', '{self.numero}', '{self.cliente.nome}')>"
+    def __repr__(self):
+        return f"<{self.__class__.__name__}: ('{self.agencia}', '{self.numero}', '{self.cliente.nome}')>"
