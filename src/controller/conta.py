@@ -9,24 +9,23 @@ class ContaController:
     def nova_conta(self, cliente, numero):
         self.model.cliente = cliente
         self.model.numero = numero
-        self.view.exibir_sucesso_nova_conta()
+        self.view.exibir_mensagem(1)
 
     def sacar(self, valor):
         calculo_saldo = self.model.saldo - valor
         if calculo_saldo < 0:
-            self.view.exibir_saque_nao_autorizado_limite()
+            self.view.exibir_mensagem(2)
             return False
         elif valor > self._limite:
-            self.view.exibir_saque_nao_autorizado_limite_saque(self.model.limite)
+            self.view.exibir_mensagem(3, self.model.limite)
             return False
 
         return True
 
     def depositar(self, valor):
         if self.model.saldo + valor <= self.model.saldo:
-            self.view.exibir_mensagem_deposito()
+            self.view.exibir_mensagem(4)
             return False
-
         return True
 
     def __str__(self):
