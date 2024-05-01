@@ -1,10 +1,8 @@
-from model.cliente import ClienteModel
-from model.endereco import EnderecoModel
+from src.model.endereco import EnderecoModel
 
 
-class PessoaFisicaModel(ClienteModel):
+class PessoaFisicaModel:
     def __init__(self, cpf, nome, data_nascimento, endereco: EnderecoModel = ""):
-        super().__init__(endereco)
         self._cpf = cpf
         self._nome = nome
         self._data_nascimento = data_nascimento

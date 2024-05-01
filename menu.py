@@ -34,8 +34,7 @@ def mostrar_menu_movimentacao_conta(saldo, deposito, usuario):
     [1] - \tDepósito
     [2] - \tSaque
     [3] - \tExtrato
-    [4] - \tCriar Conta
-    [5] - \tExibir Contas
+    [4] - \tExibir Conta
     [q] - \tSair
     ======================================
     """

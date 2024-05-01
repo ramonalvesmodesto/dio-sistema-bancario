@@ -1,8 +1,10 @@
+from src.model.pessoaFisica import PessoaFisicaModel
 from src.model.endereco import EnderecoModel
 
 
-class ClienteModel:
-    def __init__(self, endereco: EnderecoModel = ""):
+class ClienteModel(PessoaFisicaModel):
+    def __init__(self, cpf, nome, data_nascimento, endereco: EnderecoModel = ""):
+        super().__init__(cpf, nome, data_nascimento)
         self._endereco = endereco
         self._contas = []
         self._conta_principal = ""

@@ -1,10 +1,10 @@
-from src.model.conta import ContaCorrenteModel, ContaModel
+from src.model.conta import ContaCorrenteModel, ContaModel, ContaIteradorModel
 from src.view.conta import ContaView
 
 class ContaController(ContaModel):
     def __init__(self) -> None:
         super().__init__()
-        self.view = ContaView
+        self.view = ContaView()
 
     def nova_conta(self, cliente, numero):
         self.cliente = cliente
@@ -30,7 +30,7 @@ class ContaController(ContaModel):
     def __str__(self):
         return f"Agência: {self.agencia} C/C: {self.numero}"
     
-class ContaCorrenteController(ContaCorrenteModel):
+class ContaCorrenteController(ContaCorrenteModel, ContaController):
     def __init__(self) -> None:
         super().__init__()
             
@@ -42,3 +42,17 @@ class ContaCorrenteController(ContaCorrenteModel):
 
     def __repr__(self):
         return f"<{self.__class__.__name__}: ('{self.agencia}', '{self.numero}', '{self.cliente.nome}')>"
+    
+class ContaIteratorController(ContaIteradorModel):
+    def __init__(self, contas):
+        super().__init__(contas)
+        self.view = ContaView()
+
+    def __next__(self):
+        try:
+            conta = self.contas[self.contador]
+            return self.view.exibir_conta(conta)
+        except IndexError:
+            raise StopIteration
+        finally:
+            self.contador = 1

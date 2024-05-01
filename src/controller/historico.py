@@ -1,13 +1,15 @@
 from datetime import datetime
+from src.controller.log import log_banco
 from src.model.historico import HistoricoModel
-from src.model.transacao import TransacaoModel
+from src.view.historico import HistoricoView
 
 
 class HistoricoController(HistoricoModel):
     def __init__(self):
         super().__init__()
+        self.view = HistoricoView()
 
-    def adicionar_transacao(self, transacao: TransacaoModel):
+    def adicionar_transacao(self, transacao):
         self.transacoes.append(transacao)
 
     def gerar_relatorio(self, tipo_transacao=None):
@@ -33,6 +35,10 @@ class HistoricoController(HistoricoModel):
             ):
                 transacoes.append(transacao)
         return transacoes
+    
+    @log_banco
+    def listar_historico_transacoes(self, historico, tipo):
+        self.view.exibir_extrato(historico, tipo)
 
     def __str__(self) -> str:
         return f"\nExtrato: \n{', '.join([f'{transacao}' for transacao in self.transacoes])}"

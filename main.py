@@ -1,125 +1,62 @@
-import os
-from datetime import datetime
-from pathlib import Path
-
-from banco import (Banco, Cliente, Conta, ContaCorrente, ContaIterador,
-                   Deposito, Endereco, Historico, PessoaFisica, Saque,
-                   Transacao)
+from src.model.transacao import TransacaoModel
+from src.controller.transacao import DespositoController, SaqueController
+from src.controller.banco import BancoController
 from menu import (mostrar_menu_extrato, mostrar_menu_login_cadastro,
                   mostrar_menu_movimentacao_conta)
 
-ROOT_PATH = Path(__file__).parent
+def exibir_extrato(banco: BancoController):
+    tipo = None
+    mostrar_menu_extrato()
+    opcao = str(input("Escolha uma opção: "))
 
+    if opcao == '1': tipo = 'DespositoController'
+    elif opcao == '2': tipo = 'SaqueController'
 
-def log_transacao(func):
-    def registrar(mode, args):
-        with open(ROOT_PATH / "log.txt", mode, newline="") as log:
-            log.write(
-                f'[{datetime.now().strftime("%d-%m-%Y %H:%M:%S")}] Função: {func.__name__.upper()} Argumentos: {args}\n'
+    banco.listar_extrato(banco.conta_corrente_cliente_sessao_logada.historico, tipo)
+
+def transacao(banco: BancoController, tipo: TransacaoModel):
+    valor = float(
+                input(
+                    f"Digite o valor para {'Depósito' if tipo.__qualname__ == 'DespositoController' else 'Saque'}: "
+                )
             )
+    banco.transacao(tipo, valor)
 
-    def registro_transacao(*args, **kargs):
-        if os.path.exists(ROOT_PATH / "log.txt"):
-            registrar("a", args)
-        else:
-            registrar("w", args)
-        return func(*args)
-
-    return registro_transacao
-
-
-@log_transacao
-def login(banco: Banco, cpf):
-    cliente = banco.buscar_cliente(cpf)
-
-    if cliente is None:
-        print("\nUsuário não encontrado\n")
-
-    return cliente
-
-
-@log_transacao
-def exibir_contas_cliente(contas: Conta):
-    for conta in ContaIterador(contas):
-        print(conta)
-
-
-@log_transacao
-def exibir_contas_clientes_banco(banco: Banco):
-    for cliente in banco.clientes:
-        for conta in ContaIterador(cliente.contas):
-            print(conta)
-
-
-@log_transacao
-def exibir_extrato(conta_corrente: Historico, tipo):
-    print("\nExtrato: ")
-    for transacao in conta_corrente.gerar_relatorio(tipo):
-        print(transacao)
-
-
-@log_transacao
-def criar_conta(banco: Banco):
-    nova_conta_corrente = ContaCorrente()
-    nova_conta_corrente.nova_conta(banco.cliente_logado, banco.numero_conta_corrente)
-    banco.numero_conta_corrente = 1
-
-    if len(banco.cliente_logado.contas) == 0:
-        banco.cliente_logado.conta_principal = nova_conta_corrente
-
-    banco.cliente_logado.adicionar_conta(nova_conta_corrente)
-    banco.conta_corrente_cliente_sessao_logada = banco.cliente_logado.conta_principal
-
-
-@log_transacao
-def transacao(banco: Banco, transacao: Transacao, valor):
-    nova_transacao = transacao(valor)
-    banco.cliente_logado.realizar_transacao(
-        banco.conta_corrente_cliente_sessao_logada, nova_transacao
-    )
-
-
-@log_transacao
-def cadastro_endereco(cliente: Cliente, logradouro, numero, estado, cidade, bairro):
-    endereco = Endereco(logradouro, numero, estado, cidade, bairro)
-    cliente.endereco = endereco
-
-
-@log_transacao
-def cadastro_cliente(banco: Banco, cpf, nome, data_nascimento):
-    cliente = PessoaFisica(cpf, nome, data_nascimento)
-    banco.clientes = cliente
-
+def login(banco: BancoController):
+    cpf = input("Insira seu CPF: ")
+    banco.cliente_logado = banco.login(cpf)
+    
+def cadastrar_cliente(banco: BancoController):
+    nome = input("Informe seu nome: ")
+    cpf = input("Informe seu CPF: ")
+    data_nascimento = input("Informe sua data de nascimento: ")
+    logradouro = input("Informe seu logradouro: ")
+    numero = input("Informe o número de sua casa: ")
+    bairro = input("Informe seu bairro: ")
+    cidade = input("Informe sua cidade: ")
+    estado = input("Informe seu estado (XX): ")
+    endereco = {
+        'logradouro': logradouro,
+        'numero': numero,
+        'estado': estado,
+        'cidade': cidade,
+        'bairro': bairro
+    }
+    
+    banco.cadastro_cliente(cpf, nome, data_nascimento, endereco)
 
 def main():
-    banco = Banco()
+    banco = BancoController()
 
     while True:
         if banco.id_cliente_logado is None:
             mostrar_menu_login_cadastro()
             opcao = str(input("Escolha uma opção: "))
 
-            if opcao == "1":
-                cpf = input("Insira seu CPF: ")
-                banco.cliente_logado = login(banco, cpf)
-            elif opcao == "2":
-                nome = input("Informe seu nome: ")
-                cpf = input("Informe seu CPF: ")
-                data_nascimento = input("Informe sua data de nascimento: ")
-                logradouro = input("Informe seu logradouro: ")
-                numero = input("Informe o número de sua casa: ")
-                bairro = input("Informe seu bairro: ")
-                cidade = input("Informe sua cidade: ")
-                estado = input("Informe seu estado (XX): ")
-
-                cadastro_cliente(banco, cpf, nome, data_nascimento)
-                cadastro_endereco(
-                    banco.cliente_logado, logradouro, numero, estado, cidade, bairro
-                )
-            elif opcao == "3":
-                exibir_contas_clientes_banco(banco)
-            elif opcao == "q":
-                break
+            if opcao == "1": login(banco)
+            elif opcao == "2": cadastrar_cliente(banco)
+            elif opcao == "3": banco.listar_clientes()
+            elif opcao == "q": break
 
             continue
 
@@ -130,7 +67,7 @@ def main():
                 )
             )
             if opcao == "1":
-                criar_conta(banco)
+                banco.criar_conta()
             else:
                 continue
 
@@ -141,35 +78,11 @@ def main():
         )
         entrada = str(input("Digite sua escolha: "))
 
-        if entrada == "1":
-            valor = float(
-                input(
-                    f"Digite o valor para {'Depósito' if entrada == '1' else 'Saque'}: "
-                )
-            )
-            transacao(banco, Deposito, valor)
-        if entrada == "2":
-            valor = float(
-                input(
-                    f"Digite o valor para {'Depósito' if entrada == '1' else 'Saque'}: "
-                )
-            )
-            transacao(banco, Saque, valor)
-        if entrada == "3":
-            tipo = None
-            mostrar_menu_extrato()
-            opcao = str(input("Escolha uma opção: "))
-
-            if opcao == '1': tipo = 'Deposito'
-            elif opcao == '2': tipo = 'Saque'
-
-            exibir_extrato(banco.conta_corrente_cliente_sessao_logada.historico, tipo)
-        if entrada == "4":
-            criar_conta(banco)
-        if entrada == "5":
-            exibir_contas_cliente(banco.cliente_logado.contas)
-        if entrada == "q":
-            banco.id_cliente_logado = None
+        if entrada == "1": transacao(banco, DespositoController)
+        if entrada == "2": transacao(banco, SaqueController)
+        if entrada == "3": exibir_extrato(banco)
+        if entrada == "4": banco.cliente_logado.listar_conta(banco.conta_corrente_cliente_sessao_logada)
+        if entrada == "q": banco.id_cliente_logado = None
 
 
 main()

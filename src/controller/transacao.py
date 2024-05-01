@@ -5,7 +5,7 @@ from src.view.transacao import DepositoView, SaqueView
 class DespositoController(DepositoModel):
     def __init__(self, valor=0.0):
         super().__init__(valor)
-        self.view = DepositoView
+        self.view = DepositoView()
 
     def registrar(self, conta: ContaModel):
         if conta.depositar(self.valor):
@@ -22,7 +22,7 @@ class DespositoController(DepositoModel):
 class SaqueController(SaqueModel):
     def __init__(self, valor=0.0):
         super().__init__(valor)
-        self.view = SaqueView
+        self.view = SaqueView()
 
     def registrar(self, conta: ContaModel):
         if conta.sacar(self.valor):
