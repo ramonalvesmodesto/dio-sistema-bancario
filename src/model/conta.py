@@ -21,6 +21,10 @@ class ContaModel:
     @property
     def numero(self):
         return self._numero
+    
+    @numero.setter
+    def cliente(self, numero):
+        self._cliente = numero
 
     @property
     def agencia(self):
@@ -29,6 +33,10 @@ class ContaModel:
     @property
     def cliente(self):
         return self._cliente
+
+    @cliente.setter
+    def cliente(self, cliente):
+        self._cliente = cliente
 
     @property
     def historico(self):
