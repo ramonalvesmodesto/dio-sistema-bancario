@@ -16,10 +16,8 @@ class ClienteController(ClienteModel):
         tipo_transacao = transacao.__class__.__name__
         transacoes_do_dia = conta.historico.transacoes_do_dia(tipo_transacao)
 
-        if len(transacoes_do_dia) < conta.limite_saques:
-            transacao.registrar(conta)
-        else:
-            self.view.exibir_mensagem(conta.limite_saques, tipo_transacao)
+        if len(transacoes_do_dia) < conta.limite_saques: transacao.registrar(conta)
+        else: self.view.exibir_mensagem(conta.limite_saques, tipo_transacao)
 
     @log_banco
     def cadastro_endereco(self, logradouro, numero, estado, cidade, bairro):

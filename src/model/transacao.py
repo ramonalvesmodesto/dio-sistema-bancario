@@ -12,7 +12,7 @@ class TransacaoModel(ABC):
 class DepositoModel(TransacaoModel):
     def __init__(self, valor=0.0):
         self._valor = valor
-        self._data_hora_transacao = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+        self._data_hora_transacao: datetime = datetime.now()
 
     @property
     def valor(self):
@@ -33,7 +33,7 @@ class DepositoModel(TransacaoModel):
 class SaqueModel(TransacaoModel):
     def __init__(self, valor=0.0):
         self._valor = valor
-        self._data_hora_transacao = datetime.now().strftime("%d-%m-%Y, %H:%M:%S")
+        self._data_hora_transacao: datetime = datetime.now()
 
     @property
     def valor(self):

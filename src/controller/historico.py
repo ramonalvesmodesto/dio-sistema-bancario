@@ -26,13 +26,7 @@ class HistoricoController(HistoricoModel):
         transacoes = []
 
         for transacao in self.transacoes:
-            if (
-                datetime.strptime(
-                    transacao.data_hora_transacao, "%d-%m-%Y, %H:%M:%S"
-                ).date()
-                == data_atual
-                and transacao.__class__.__name__ == tipo_transacao
-            ):
+            if transacao.data_hora_transacao.date() == data_atual and transacao.__class__.__name__ == tipo_transacao:
                 transacoes.append(transacao)
         return transacoes
     

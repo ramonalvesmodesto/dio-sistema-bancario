@@ -16,8 +16,7 @@ class BancoController(BancoModel):
 
     def buscar_cliente(self, cpf):
         for cliente in self.clientes:
-            if cliente.cpf == cpf:
-                return cliente
+            if cliente.cpf == cpf: return cliente
         return None
     
     @log_banco

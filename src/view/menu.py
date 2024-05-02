@@ -24,11 +24,10 @@ def mostrar_menu_extrato():
     print(textwrap.dedent(menu))
 
 
-def mostrar_menu_movimentacao_conta(saldo, deposito, usuario):
+def mostrar_menu_movimentacao_conta(saldo, usuario):
     menu = f"""\n
     =============== Menu ===============
     Saldo: R${saldo: .2f}
-    Último Depósito: R${deposito: .2f}
     Usuário: {usuario}
 
     [1] - \tDepósito

@@ -13,7 +13,7 @@ def log_banco(func):
             )
 
     def registro_transacao(*args, **kargs):
-        if os.path.exists(ROOT_PATH / "log.txt"):
+        if os.path.exists(ROOT_PATH / "log/log.txt"):
             registrar("a", args)
         else:
             registrar("w", args)

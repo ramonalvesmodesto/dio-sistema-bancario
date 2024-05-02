@@ -1,7 +1,7 @@
 from src.model.transacao import TransacaoModel
 from src.controller.transacao import DespositoController, SaqueController
 from src.controller.banco import BancoController
-from menu import (mostrar_menu_extrato, mostrar_menu_login_cadastro,
+from src.view.menu import (mostrar_menu_extrato, mostrar_menu_login_cadastro,
                   mostrar_menu_movimentacao_conta)
 
 def exibir_extrato(banco: BancoController):
@@ -61,11 +61,7 @@ def main():
 
             continue
 
-        mostrar_menu_movimentacao_conta(
-            banco.cliente_logado.conta.saldo,
-            banco.ultimo_valor_deposito,
-            banco.id_cliente_logado,
-        )
+        mostrar_menu_movimentacao_conta(banco.cliente_logado.conta.saldo, banco.id_cliente_logado)
         entrada = str(input("Digite sua escolha: "))
 
         if entrada == "1": transacao(banco, DespositoController)
