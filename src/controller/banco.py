@@ -8,7 +8,6 @@ from src.model.banco import BancoModel
 from src.view.banco import BancoView
 
 
-
 class BancoController(BancoModel):
     def __init__(self):
         super().__init__()
@@ -16,14 +15,16 @@ class BancoController(BancoModel):
 
     def buscar_cliente(self, cpf):
         for cliente in self.clientes:
-            if cliente.cpf == cpf: return cliente
+            if cliente.cpf == cpf:
+                return cliente
         return None
-    
+
     @log_banco
     def login(self, cpf):
         cliente = self.buscar_cliente(cpf)
 
-        if cliente is None: print("\nUsuário não encontrado\n")
+        if cliente is None:
+            print("\nUsuário não encontrado\n")
 
         return cliente
 
@@ -43,10 +44,16 @@ class BancoController(BancoModel):
 
     @log_banco
     def cadastro_cliente(self, cpf, nome, data_nascimento, endereco):
-        endereco = EnderecoModel(endereco['logradouro'], endereco['numero'], endereco['estado'], endereco['cidade'], endereco['bairro'])
+        endereco = EnderecoModel(
+            endereco["logradouro"],
+            endereco["numero"],
+            endereco["estado"],
+            endereco["cidade"],
+            endereco["bairro"],
+        )
         cliente = ClienteController(cpf, nome, data_nascimento, endereco)
-        self.clientes = cliente    
-        return cliente    
+        self.clientes = cliente
+        return cliente
 
     @log_banco
     def listar_clientes(self):

@@ -23,8 +23,7 @@ class ClienteModel(PessoaFisicaModel):
     @property
     def conta(self):
         return self._conta
-    
+
     @conta.setter
     def conta(self, conta):
         self._conta = conta
-

@@ -4,10 +4,10 @@ from src.model.conta import ContaModel
 
 class BancoModel:
     def __init__(self):
-        self._ultimo_valor_deposito:float = 0
+        self._ultimo_valor_deposito: float = 0
         self._clientes: list[ClienteModel] = []
         self._id_cliente_logado: str = None
-        self._cliente_logado = ''
+        self._cliente_logado = ""
         self._numero_conta_corrente: int = 1
         self._conta_corrente_cliente_sessao_logada: ContaModel = ""
 
@@ -40,7 +40,7 @@ class BancoModel:
         if cliente is not None:
             self._cliente_logado = cliente
             self._id_cliente_logado = cliente.cpf
-            
+
     @property
     def numero_conta_corrente(self):
         return self._numero_conta_corrente

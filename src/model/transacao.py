@@ -9,6 +9,7 @@ class TransacaoModel(ABC):
     def registrar(conta: ContaModel):
         pass
 
+
 class DepositoModel(TransacaoModel):
     def __init__(self, valor=0.0):
         self._valor = valor
@@ -25,10 +26,11 @@ class DepositoModel(TransacaoModel):
     @property
     def data_hora_transacao(self):
         return self._data_hora_transacao
-    
+
     @data_hora_transacao.setter
     def data_hora_transacao(self, data_hora_transacao):
         self._data_hora_transacao = data_hora_transacao
+
 
 class SaqueModel(TransacaoModel):
     def __init__(self, valor=0.0):
@@ -46,8 +48,7 @@ class SaqueModel(TransacaoModel):
     @property
     def data_hora_transacao(self):
         return self._data_hora_transacao
-    
+
     @data_hora_transacao.setter
     def data_hora_transacao(self, data_hora_transacao):
         self._data_hora_transacao = data_hora_transacao
-

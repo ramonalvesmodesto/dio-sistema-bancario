@@ -24,7 +24,7 @@ class ContaModel:
     @property
     def numero(self):
         return self._numero
-    
+
     @numero.setter
     def numero(self, numero):
         self._numero = numero
@@ -44,17 +44,18 @@ class ContaModel:
     @property
     def historico(self):
         return self._historico
-    
+
+
 class ContaCorrenteModel(ContaModel):
     def __init__(self, limite=500.0, limite_saques=10):
         super().__init__()
         self._limite: float = limite
-        self._limite_saques:float = limite_saques
+        self._limite_saques: float = limite_saques
 
     @property
     def limite(self):
         return self._limite
-    
+
     @limite.setter
     def limite(self, limite):
         self._limite = limite
@@ -62,10 +63,11 @@ class ContaCorrenteModel(ContaModel):
     @property
     def limite_saques(self):
         return self._limite_saques
-    
+
     @limite_saques.setter
     def limite_saques(self, limite_saques):
         self._limite_saques = limite_saques
+
 
 class ContaIteradorModel:
     def __init__(self, contas):
@@ -75,11 +77,11 @@ class ContaIteradorModel:
     @property
     def contas(self):
         return self._contas
-    
+
     @property
     def contador(self):
         return self._contador
-    
+
     @contador.setter
     def contador(self, numero):
         self._contador += numero

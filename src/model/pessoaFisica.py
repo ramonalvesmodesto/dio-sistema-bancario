@@ -18,10 +18,9 @@ class PessoaFisicaModel:
     @property
     def data_nascimento(self):
         return self._data_nascimento
-    
+
     def __str__(self):
         return f"{', '.join([f'{conta}' for conta in self._contas])}\n"
 
     def __repr__(self):
         return f"<{self.__class__.__name__}: ('{self.cpf}')>"
-

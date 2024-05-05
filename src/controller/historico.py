@@ -26,10 +26,13 @@ class HistoricoController(HistoricoModel):
         transacoes = []
 
         for transacao in self.transacoes:
-            if transacao.data_hora_transacao.date() == data_atual and transacao.__class__.__name__ == tipo_transacao:
+            if (
+                transacao.data_hora_transacao.date() == data_atual
+                and transacao.__class__.__name__ == tipo_transacao
+            ):
                 transacoes.append(transacao)
         return transacoes
-    
+
     @log_banco
     def listar_historico_transacoes(self, historico, tipo):
         self.view.exibir_extrato(historico, tipo)
