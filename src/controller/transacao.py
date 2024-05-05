@@ -1,17 +1,17 @@
 from src.model.conta import ContaModel
 from src.model.transacao import DepositoModel, SaqueModel
-from src.view.transacao import DepositoView, SaqueView
+from src.view.transacao import TransacaoView
 
 class DespositoController(DepositoModel):
     def __init__(self, valor=0.0):
         super().__init__(valor)
-        self.view = DepositoView()
+        self.view = TransacaoView()
 
     def registrar(self, conta: ContaModel):
         if conta.depositar(self.valor):
             conta.historico.adicionar_transacao(DespositoController(self.valor))
             conta.saldo = self.valor
-            self.view.exibir_mensagem()
+            self.view.exibir_mensagem('Depósito')
 
     def __str__(self):
         return f"Depósito: +{self.valor:.2f} - {self.data_hora_transacao}"
@@ -22,13 +22,13 @@ class DespositoController(DepositoModel):
 class SaqueController(SaqueModel):
     def __init__(self, valor=0.0):
         super().__init__(valor)
-        self.view = SaqueView()
+        self.view = TransacaoView()
 
     def registrar(self, conta: ContaModel):
         if conta.sacar(self.valor):
             conta.historico.adicionar_transacao(SaqueController(self.valor))
             conta.saldo =- self.valor
-            self.view.exibir_mensagem()
+            self.view.exibir_mensagem('Saque')
 
     def __str__(self):
         return f"Saque: -{self.valor:.2f} - {self.data_hora_transacao}"

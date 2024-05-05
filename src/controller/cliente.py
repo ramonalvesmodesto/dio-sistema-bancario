@@ -26,7 +26,7 @@ class ClienteController(ClienteModel):
 
     @log_banco
     def listar_conta(self):
-        self.view.exibir_conta(self.conta)
+        self.conta.view.exibir_conta(self.conta)
 
 
     def adicionar_conta(self, conta: ContaModel):

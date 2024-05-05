@@ -10,11 +10,11 @@ class ContaView:
         elif tipo_mensagem == 4: print("\nNão é permitido depósitos de valores iguais ou menores que zero!\n")
 
     def exibir_conta(self, conta: ContaCorrenteModel):
-        return textwrap.dedent(
+        print(textwrap.dedent(
             f"""
                 Nome: {conta.cliente.nome}
                 C/C: {conta.numero}
                 Agência: {conta.agencia}
                 Saldo: {conta.saldo}
             """
-        )
+        ))
